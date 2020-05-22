@@ -24,22 +24,26 @@ rename_files <- function(microscope,antibody,picture_date,lens_magnification){
         file_name <- gsub(illegal,replacement,file_name)
         file_name <- gsub(control,replacement,file_name)
         file_name <- gsub(reserved,replacement,file_name)
-        file_name <- gsub(" ",replacement,file_name)
+        file_name <- gsub(whitespace,replacement,file_name)
         return(file_name)
     }
 
     suppressMessages(library("tools"))
     
     if(missing(microscope)){
+        message("Usage: rename_files(microscope,antibody,picture_date,lens_magnification)")
         stop(paste("Microscope not provided"),call.=FALSE)
     }
     if(missing(antibody)){
+        message("Usage: rename_files(microscope,antibody,picture_date,lens_magnification)")
         stop(paste("Antibody not provided"),call.=FALSE)
     }
     if(missing(picture_date)){
+        message("Usage: rename_files(microscope,antibody,picture_date,lens_magnification)")
         stop(paste("Picture date not provided"),call.=FALSE)
     }
     if(missing(lens_magnification)){
+        message("Usage: rename_files(microscope,antibody,picture_date,lens_magnification)")
         stop(paste("Lens magnification not provided"),call.=FALSE)
     }
 
@@ -47,7 +51,7 @@ rename_files <- function(microscope,antibody,picture_date,lens_magnification){
     confirmParameter("antibody",antibody)
     confirmParameter("picture date",picture_date)
     confirmParameter("lens magnification",lens_magnification)
-    log <- c("Parameters provided:",paste("- Microscope:",microscope),paste("- Antibody:",antibody),paste("- Picture date:",picture_date),paste("- Lens magnification:",lens_magnification),"")
+    log <- c("Parameters provided:",paste("- Microscope:",microscope),paste("- Antibody:",antibody),paste("- Picture date:",picture_date),paste("- Lens magnification:",lens_magnification),"Please note that any illegal characters or white spaces will be removed from file names","")
     
     prefix <- paste(microscope,antibody,picture_date,lens_magnification,sep="_")
     prefix <- sanitize(prefix)
@@ -58,7 +62,6 @@ rename_files <- function(microscope,antibody,picture_date,lens_magnification){
     
     files <- setdiff(list.files(".",full.names=TRUE),list.dirs(recursive=FALSE,full.names=TRUE))
     files <- setdiff(files,"./batch_rename_files.r")
-    print(files)
     counter <- sprintf("%03d",1:length(files))
     dir.create("Converted",showWarnings=FALSE)
     for(i in 1:length(files)){
