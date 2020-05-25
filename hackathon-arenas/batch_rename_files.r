@@ -7,7 +7,7 @@
 
 rename_files <- function(microscope, antibody, picture_date, lens_magnification){
     
-    ## checks to make sure parameters are entered ----
+    ## Checks to make sure parameters are entered ----
     if(missing(microscope)){
         message("Usage: rename_files(microscope, antibody, picture_date, lens_magnification)")
         stop(paste("Microscope not provided"), call. = FALSE)
@@ -25,7 +25,7 @@ rename_files <- function(microscope, antibody, picture_date, lens_magnification)
         stop(paste("Lens magnification not provided"), call. = FALSE)
     }
 
-    ## user input required to confirm parameters ----
+    ## User input required to confirm parameters ----
     confirmParameter <- function(param_name, parameter){
         cat("\nValue provided for ", param_name, ": ", parameter, "\n", sep="")
         answer <- readline(prompt = "Is this correct? (y/n): ")
@@ -45,7 +45,8 @@ rename_files <- function(microscope, antibody, picture_date, lens_magnification)
              paste("- Lens magnification:", lens_magnification),
              "Please note that any illegal characters or white spaces will be removed from file names", "")
     
-    ## Clean up illegal characters - adapted from `path_sanitize()` from `fs` package https://fs.r-lib.org
+    ## Clean up illegal characters ----
+    ## adapted from `path_sanitize()` from `fs` package https://fs.r-lib.org
     sanitize <- function(file_name, replacement = ""){
         illegal <- "[/\\?<>\\:*|\":]"
         control <- "[[:cntrl:]]"
@@ -84,6 +85,7 @@ rename_files <- function(microscope, antibody, picture_date, lens_magnification)
         log = c(log, paste(oldfile, "renamed to", newfile))
     }
     
+    ## Write information in the log file ----
     write(log, file="Converted/renaming_log.txt", sep="\n")
 }
 

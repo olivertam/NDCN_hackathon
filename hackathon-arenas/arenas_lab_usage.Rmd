@@ -9,7 +9,7 @@ output: html_document
 
 This workflow is to rename files within the working directory folder. 
 
-Discussion
+### Discussion
 
 - working directory; where the script is vs. where the files are vs. where your working directory is
 - where should this script live on Carmen's computer
@@ -22,6 +22,8 @@ Download the GitHub folder. Move your "analysis" folder. Note that it has a .Rpr
 We will be running these scripts from RStudio. 
 
 Start off by RESTARTING R. File menu > Session > Restart R. 
+
+(yes we just opened R with RStudio but it's a great habit to get into!)
 
 ```{r setup}
 
@@ -44,7 +46,7 @@ The `batch_rename_files.r` script has 1 main function:
 - `microscope`, e.g. "BF"
 - `antibody`, e.g. "Thrb488dkDAPI"
 - `picture_date`, e.g. "20200522" -- recommend YYYYMMDD not YYMMDD. (even better: YYYY-MM-DD)
-- `lens_magnification`, e.g. "20x2_0" -- recommend not using "." because can be confused with fileextension
+- `lens_magnification`, e.g. "20x2_0" -- recommend not using "." because can be confused with file extension
 
 ## Testing the script
 
@@ -80,6 +82,9 @@ rename_files(microscope = "BF",
 ```
 
 ## Improving documentation and naming
+
+- Let's add more comments to the function and to this .Rmd document so that you feel comfortable using it. 
+- try using `----` in your code chunk comments so that you can navigate at the bottom of the file editor
 
 ### Renaming the script and functions 
 
