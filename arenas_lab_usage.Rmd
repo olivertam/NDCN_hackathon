@@ -1,0 +1,113 @@
+---
+title: "Arenas lab file renaming usage"
+author: ""
+date: "5/25/2020"
+output: html_document
+---
+
+## Summary
+
+This workflow is to rename files within the working directory folder. 
+
+Discussion
+
+- working directory; where the script is vs. where the files are vs. where your working directory is
+
+
+### Planning
+
+TODISCUSS: 
+
+- where should this script live on Carmen's computer
+  - maybe a folder called "analysis" from her home directory
+
+TODO:
+
+- create `hackathon_2020-05-29` folder in GH repo
+
+## Setup
+
+Download the GitHub folder. Move your "analysis" folder. Note that it has a .Rproj file; you can double-click that .Rproj file to open RStudio to this working directory.
+
+We will be running these scripts from RStudio. 
+
+Start off by RESTARTING R. File menu > Session > Restart R. 
+
+```{r setup}
+
+## libraries ---
+## here package helps manage filepaths so that this will work more easily on different computers
+library(here) # install.packages("here")
+
+
+## script to source so you can use it
+source(here("rename_files_20200529/scripts", "batch_rename_files.r"))
+
+```
+
+## Look through the script
+
+The `batch_rename_files.r` script has 1 main function:
+
+`rename_files`. It requires these inputs in quotes:
+
+- `microscope`, e.g. "BF"
+- `antibody`, e.g. "Thrb488dkDAPI"
+- `picture_date`, e.g. "20200522" -- recommend YYYYMMDD not YYMMDD. (even better: YYYY-MM-DD)
+- `lens_magnification`, e.g. "20x2_0" -- recommend not using "." because can be confused with fileextension
+
+## Testing the script
+
+You will need to confirm from the Console. 
+
+```{r usage}
+
+## change your working directory to where the files are with `setwd()`
+
+setwd(here("rename_files_20200529/test_files"))
+
+
+## rename files 
+rename_files(microscope = "BF",
+             antibody = "Thrb488dkDAPI", 
+             picture_date = "20200522",
+             lens_magnification = "20x2_0")
+
+```
+
+What happens?
+
+### What is wrong here: 
+
+```{r usage}
+
+rename_files(microscope = "BF",
+             antibody, = "Thrb488dkDAPI", 
+             picture_date = "20200522",
+             lens_magnification = "20x2_0")
+
+
+```
+
+## Improving documentation and naming
+
+### Renaming the script and functions 
+
+- Do we want to rename the script or functions?
+- Do we want to rename the "Converted" folder?
+
+### Adding function documentation with ROxygen
+
+1. Open `batch_rename_files.R`
+1. Put your cursor in the function somewhere (e.g. below line 6)
+1. Menu bar > Code > Insert Roxygen skeleton
+1. Fill in the parameters with descriptions
+
+## Adding functionality
+
+Ideas to discuss and prioritize
+
+- Should we have it print a message when completed, identifying the log file?
+- Should we add a folder directory to the function so you can call it from anywhere?
+
+
