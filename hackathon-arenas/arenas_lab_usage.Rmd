@@ -12,18 +12,8 @@ This workflow is to rename files within the working directory folder.
 Discussion
 
 - working directory; where the script is vs. where the files are vs. where your working directory is
-
-
-### Planning
-
-TODISCUSS: 
-
 - where should this script live on Carmen's computer
   - maybe a folder called "analysis" from her home directory
-
-TODO:
-
-- create `hackathon_2020-05-29` folder in GH repo
 
 ## Setup
 
@@ -36,7 +26,7 @@ Start off by RESTARTING R. File menu > Session > Restart R.
 ```{r setup}
 
 ## libraries ---
-## here package helps manage filepaths so that this will work more easily on different computers
+## `here` package helps manage filepaths so that this will work more easily on different computers
 library(here) # install.packages("here")
 
 
