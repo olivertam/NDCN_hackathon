@@ -5,7 +5,7 @@
 ## This function will rename all files within the working directory folder. 
 ## It currently handles up to 999 files.
 
-rename_files <- function(microscope, antibody, picture_date, lens_magnification){
+batch_rename_files <- function(microscope, antibody, picture_date, lens_magnification){
   
   ## Checks to make sure parameters are entered ----
   if(missing(microscope)){

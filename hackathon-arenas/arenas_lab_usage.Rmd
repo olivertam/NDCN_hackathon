@@ -41,7 +41,7 @@ source(here("hackathon-arenas", "batch_rename_files.r"))
 
 The `batch_rename_files.r` script has 1 main function:
 
-`rename_files`. It requires these inputs in quotes:
+`batch_rename_files`. It requires these inputs in quotes:
 
 - `microscope`, e.g. "BF"
 - `antibody`, e.g. "Thrb488dkDAPI"
@@ -60,7 +60,7 @@ setwd(here("rename_files_examples/test_files"))
 
 
 ## rename files 
-rename_files(microscope = "BF",
+batch_rename_files(microscope = "BF",
              antibody = "Thrb488dkDAPI", 
              picture_date = "20200522",
              lens_magnification = "20x2_0")
