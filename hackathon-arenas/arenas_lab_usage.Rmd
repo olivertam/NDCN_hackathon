@@ -41,7 +41,7 @@ library(here) # install.packages("here")
 
 
 ## script to source so you can use it
-source(here("rename_files_20200529/scripts", "batch_rename_files.r"))
+source(here("hackathon-arenas", "batch_rename_files.r"))
 
 ```
 
@@ -64,7 +64,7 @@ You will need to confirm from the Console.
 
 ## change your working directory to where the files are with `setwd()`
 
-setwd(here("rename_files_20200529/test_files"))
+setwd(here("rename_files_examples/test_files"))
 
 
 ## rename files 

@@ -1,0 +1,34 @@
+Parameters provided:
+
+- Microscope: BF
+- Antibody: Thrb488dkDAPI
+- Picture date: 20200522
+- Lens magnification: 20x2_0
+Please note that any illegal characters or white spaces will be removed from file names
+
+Files renamed on 25 May, 2020 at 02:35 PM:
+export_20200517_01.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-001.tif
+export_20200517_02.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-002.tif
+export_20200517_03.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-003.tif
+export_20200517_04.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-004.tif
+export_20200517_05.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-005.tif
+export_20200517_06.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-006.tif
+export_20200517_07.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-007.tif
+export_20200517_08.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-008.tif
+export_20200517_09.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-009.tif
+export_20200517_10.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-010.tif
+export_20200517_11.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-011.tif
+export_20200517_12.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-012.tif
+export_20200517_13.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-013.tif
+export_20200517_14.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-014.tif
+export_20200517_15.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-015.tif
+export_20200517_16.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-016.tif
+export_20200517_17.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-017.tif
+export_20200517_18.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-018.tif
+export_20200517_19.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-019.tif
+export_20200517_20.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-020.tif
+export_20200517_21.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-021.tif
+export_20200517_22.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-022.tif
+export_20200517_23.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-023.tif
+export_20200517_24.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-024.tif
+export_20200517_25.tif renamed to BF_Thrb488dkDAPI_20200522_20x2_0-025.tif
