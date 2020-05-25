@@ -1,6 +1,6 @@
 #!/bin/env R
 
-## Batch Rename Files
+## Batch Rename Files. Testing. 
 
 ## This function will rename all files within the working directory folder. 
 ## It currently handles up to 999 files.
