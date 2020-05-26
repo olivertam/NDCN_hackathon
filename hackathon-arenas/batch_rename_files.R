@@ -9,19 +9,19 @@ batch_rename_files <- function(microscope, antibody, picture_date, lens_magnific
   
   ## Checks to make sure parameters are entered ----
   if(missing(microscope)){
-    message("Usage: rename_files(microscope, antibody, picture_date, lens_magnification)")
+    message("Usage: batch_rename_files(microscope, antibody, picture_date, lens_magnification)")
     stop(paste("Microscope not provided"), call. = FALSE)
   }
   if(missing(antibody)){
-    message("Usage: rename_files(microscope, antibody, picture_date, lens_magnification)")
+    message("Usage: batch_rename_files(microscope, antibody, picture_date, lens_magnification)")
     stop(paste("Antibody not provided"), call. = FALSE)
   }
   if(missing(picture_date)){
-    message("Usage: rename_files(microscope, antibody, picture_date, lens_magnification)")
+    message("Usage: batch_rename_files(microscope, antibody, picture_date, lens_magnification)")
     stop(paste("Picture date not provided"), call. = FALSE)
   }
   if(missing(lens_magnification)){
-    message("Usage: rename_files(microscope, antibody, picture_date, lens_magnification)")
+    message("Usage: batch_rename_files(microscope, antibody, picture_date, lens_magnification)")
     stop(paste("Lens magnification not provided"), call. = FALSE)
   }
   
