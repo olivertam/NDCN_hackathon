@@ -138,10 +138,13 @@ if(length(directory_list) != length(microscopes)){
 for(index in 1:length(directory_list)){
     if(dir.exists(directory_list[index])){
         setwd(directory_list[index])
-        batch_rename_files(microscope = microscopes[i],
-                           antibody = antibodies[i],
-                           picture_date = picture_dates[i],
-                           lens_magnification = lens_magnifications[i])
+        batch_rename_files(microscope = microscopes[index],
+                           antibody = antibodies[index],
+                           picture_date = picture_dates[index],
+                           lens_magnification = lens_magnifications[index])
+    }
+    else{
+        warning(paste("This directory", directory_list[index], "does not exist. Skipping"))
     }
 }
 setwd(current_directory)
