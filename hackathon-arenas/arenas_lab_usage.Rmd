@@ -104,5 +104,46 @@ Ideas to discuss and prioritize
 
 - Should we have it print a message when completed, identifying the log file?
 - Should we add a folder directory to the function so you can call it from anywhere?
+- Can we run this script on a bunch of directories?
 
+```{r multi_directory}
 
+# Store current directory to get back to it at the end
+current_directory <- getwd()
+
+# This can be coded during runtime or provided as an input file
+directory_list <- read.csv("list_of_directories.csv")
+directory_list <- c("dirA", "dirB", "dirC")
+
+# Parameters for renaming files can be provided as four separate vectors
+microscopes <- c("BF","CF","EM")
+antibodies <- c("Thrb488dkDAPI","Exosc3488nucHoechst","mtDNAgold")
+picture_dates <- c("20200529","20200101","20191130")
+lens_magnifications <- c("20x2_0","40x","TEM")
+
+# Check that the parameter lists and directory lists are the same
+if(length(directory_list) != length(microscopes)){
+    stop(paste("There are", length(directory_list), "directories given, but only", length(microscopes), "microscope information provided"), call.=FALSE)
+}
+if(length(directory_list) != length(antibodies)){
+    stop(paste("There are", length(directory_list), "directories given, but only", length(antibodies), "antibody information provided"), call.=FALSE)
+}
+if(length(directory_list) != length(picture_dates)){
+    stop(paste("There are", length(directory_list), "directories given, but only", length(picture_dates), "picture dates provided"), call.=FALSE)
+}
+if(length(directory_list) != length(microscopes)){
+    stop(paste("There are", length(directory_list), "directories given, but only", length(lens_magnifications), "lens magnification information provided"), call.=FALSE)
+}
+
+for(index in 1:length(directory_list)){
+    if(dir.exists(directory_list[index])){
+        setwd(directory_list[index])
+        batch_rename_files(microscope = microscopes[i],
+                           antibody = antibodies[i],
+                           picture_date = picture_dates[i],
+                           lens_magnification = lens_magnifications[i])
+    }
+}
+setwd(current_directory)
+
+```
