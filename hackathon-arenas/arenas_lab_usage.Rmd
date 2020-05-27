@@ -78,7 +78,7 @@ What happens?
 
 ### What is wrong here: 
 
-```{r usage, eval = FALSE}
+```{r error, eval = FALSE}
 
 rename_files(microscope = "BF",
              antibody, = "Thrb488dkDAPI", 
@@ -113,7 +113,7 @@ Ideas to discuss and prioritize
 - Should we add a folder directory to the function so you can call it from anywhere?
 - Can we run this script on a bunch of directories?
 
-```{r multi_directory}
+```{r multi_directory eval=FALSE}
 
 # Store current directory to get back to it at the end
 current_directory <- getwd()
