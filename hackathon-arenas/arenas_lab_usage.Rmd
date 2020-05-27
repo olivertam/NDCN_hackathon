@@ -74,19 +74,10 @@ batch_rename_files(microscope = "BF",
 
 ```
 
-What happens?
+## Questions?
 
-### What is wrong here: 
+What are your questions about this workflow? 
 
-```{r error, eval = FALSE}
-
-rename_files(microscope = "BF",
-             antibody, = "Thrb488dkDAPI", 
-             picture_date = "20200522",
-             lens_magnification = "20x2_0")
-
-
-```
 
 ## Improving documentation and naming
 
@@ -107,11 +98,11 @@ rename_files(microscope = "BF",
 
 ## Adding functionality
 
-Ideas to discuss and prioritize
+(in development)
 
-- Should we have it print a message when completed, identifying the log file?
-- Should we add a folder directory to the function so you can call it from anywhere?
-- Can we run this script on a bunch of directories?
+### Running on multiple folders
+
+Can we run this script on a bunch of directories?
 
 ```{r multi_directory eval=FALSE}
 
@@ -157,3 +148,27 @@ for(index in 1:length(directory_list)){
 setwd(current_directory)
 
 ```
+
+### Helper messages
+
+Should we have it print a message when completed, identifying the log file?
+
+## More practice 
+
+(in development)
+
+### What is wrong here: 
+
+What happens?
+
+```{r error, eval = FALSE}
+
+rename_files(microscope = "BF",
+             antibody, = "Thrb488dkDAPI", 
+             picture_date = "20200522",
+             lens_magnification = "20x2_0")
+
+
+```
+
+
