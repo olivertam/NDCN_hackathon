@@ -1,6 +1,7 @@
 #!/bin/env R
 
 ## Batch Rename Files. 
+## Original script by Oliver Tam tam@cshl.edu, May 2020
 
 ## This function will rename all files within the working directory folder. 
 ## It currently handles up to 999 files.
@@ -70,7 +71,7 @@ batch_rename_files <- function(microscope, antibody, picture_date, lens_magnific
                        format(today,format="%d %B, %Y"), " at ", 
                        format(today, format="%I:%M %p"), ":"))
   
-  ## Identify files to rename ----
+  ## Identify files and rename them ----
   files <- setdiff(list.files(".", full.names = TRUE), list.dirs(recursive = FALSE, full.names = TRUE))
   files <- setdiff(files, "./batch_rename_files.r")
   counter <- sprintf("%03d", 1:length(files))

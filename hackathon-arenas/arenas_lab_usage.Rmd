@@ -39,25 +39,32 @@ source(here("hackathon-arenas", "batch_rename_files.r"))
 
 ## Look through the script
 
+Let's open the `batch_rename_files.r` script and get a sense of what it does. 
+
 The `batch_rename_files.r` script has 1 main function:
 
-`batch_rename_files`. It requires these inputs in quotes:
+`batch_rename_files`. It requires the user to provide inputs (in quotes!) for these variables:
 
 - `microscope`, e.g. "BF"
 - `antibody`, e.g. "Thrb488dkDAPI"
 - `picture_date`, e.g. "20200522" -- recommend YYYYMMDD not YYMMDD. (even better: YYYY-MM-DD)
 - `lens_magnification`, e.g. "20x2_0" -- recommend not using "." because can be confused with file extension
 
+This function will: 
+
+1. It will require user input to confirm how you set variables. We'll do this from the R Console. 
+2. It will replace illegal characters: `[/\\?<>\\:*|\":]`
+3. It will create new filename prefix and log information 
+4. It will identify files to rename
+5. Finally, it will Write information in the log file
+
 ## Testing the script
 
-You will need to confirm from the Console. 
-
-```{r usage}
+```{r usage, eval = FALSE}
 
 ## change your working directory to where the files are with `setwd()`
 
 setwd(here("rename_files_examples/test_files"))
-
 
 ## rename files 
 batch_rename_files(microscope = "BF",
@@ -71,7 +78,7 @@ What happens?
 
 ### What is wrong here: 
 
-```{r usage}
+```{r usage, eval = FALSE}
 
 rename_files(microscope = "BF",
              antibody, = "Thrb488dkDAPI", 
