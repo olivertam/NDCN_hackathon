@@ -1,41 +1,21 @@
 ---
 title: "Arenas lab file renaming usage"
-author: ""
+author: "Julie Lowndes & Oliver Tam"
 date: "5/25/2020"
 output: html_document
 ---
 
-## Summary
+## Introduction
 
-This workflow is to rename files within the working directory folder. 
-
-### Discussion
-
-- working directory; where the script is vs. where the files are vs. where your working directory is
-- where should this script live on Carmen's computer
-  - maybe a folder called "analysis" from her home directory
+This document is to keep track of our workflow using `batch_rename_files.R`, a script to rename files within the working directory folder. 
 
 ## Setup
 
-Download the GitHub folder. Move your "analysis" folder. Note that it has a .Rproj file; you can double-click that .Rproj file to open RStudio to this working directory.
+Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).  
 
-We will be running these scripts from RStudio. 
+Look inside: it has a .Rproj file; double-click that .Rproj file to open RStudio to this working directory. We will be working today in RStudio.
 
-Start off by RESTARTING R. File menu > Session > Restart R. 
-
-(yes we just opened R with RStudio but it's a great habit to get into!)
-
-```{r setup}
-
-## libraries ---
-## `here` package helps manage filepaths so that this will work more easily on different computers
-library(here) # install.packages("here")
-
-
-## script to source so you can use it
-source(here("hackathon-arenas", "batch_rename_files.r"))
-
-```
+We will work from this `arenas_lab_usage.Rmd` document today. It is an R Markdown document, which combines simple text and R code. You can use the Table of Contents at the bottom of the file to navigate. And please add your own notes!
 
 ## Look through the script
 
@@ -47,8 +27,8 @@ The `batch_rename_files.r` script has 1 main function:
 
 - `microscope`, e.g. "BF"
 - `antibody`, e.g. "Thrb488dkDAPI"
-- `picture_date`, e.g. "20200522" -- recommend YYYYMMDD not YYMMDD. (even better: YYYY-MM-DD)
-- `lens_magnification`, e.g. "20x2_0" -- recommend not using "." because can be confused with file extension
+- `picture_date`, e.g. "20200522"
+- `lens_magnification`, e.g. "20x2_0" 
 
 This function will: 
 
@@ -56,15 +36,35 @@ This function will:
 2. It will replace illegal characters: `[/\\?<>\\:*|\":]`
 3. It will create new filename prefix and log information 
 4. It will identify files to rename
-5. Finally, it will Write information in the log file
+5. Finally, it will write information in the log file
 
-## Testing the script
+## Using the script
+
+Let's try it back from this document. We need to "call" this function, which we can do from another place where we document our workflow.
+
+Start off by RESTARTING R. File menu > Session > Restart R. 
+
+(yes we just opened R with RStudio but it's a great habit to get into!)
+
+```{r setup}
+
+## libraries ---
+## `here` package helps manage filepaths so that this will work more easily on different computers
+library(here) # install.packages("here")
+
+## source the script so you can use it
+source(here("hackathon-arenas", "batch_rename_files.r"))
+
+```
+
+Now let's use the script. We will rename the example image files in this repo.
+
+We will need to change the **working directory** to where the image files we want to process are.
 
 ```{r usage, eval = FALSE}
 
 ## change your working directory to where the files are with `setwd()`
-
-setwd(here("rename_files_examples/test_files"))
+setwd(here("rename_files_examples", "test_files"))
 
 ## rename files 
 batch_rename_files(microscope = "BF",
@@ -74,10 +74,68 @@ batch_rename_files(microscope = "BF",
 
 ```
 
-## Questions?
+## Testing on Carmen's computer
 
-What are your questions about this workflow? 
+Let's try this again on Carmen's computer and discuss!
 
+## Adding functionality
+
+What are ideas we'd like to improve?
+
+### Running on multiple folders
+
+Can we run this script on a bunch of directories?
+
+```{r multi_directory, eval=FALSE}
+
+# Store current directory to get back to it at the end
+current_directory <- getwd()
+
+# This can be coded during runtime or provided as an input file
+directory_list <- read.csv("list_of_directories.csv")
+directory_list <- c("dirA", "dirB", "dirC")
+
+# Parameters for renaming files can be provided as four separate vectors
+microscopes <- c("BF","CF","EM")
+antibodies <- c("Thrb488dkDAPI","Exosc3488nucHoechst","mtDNAgold")
+picture_dates <- c("20200529","20200101","20191130")
+lens_magnifications <- c("20x2_0","40x","TEM")
+
+# loop through directory_list ----
+for(index in 1:length(directory_list)){
+  if(dir.exists(directory_list[index])){
+    setwd(directory_list[index])
+    batch_rename_files(microscope = microscopes[index],
+                       antibody = antibodies[index],
+                       picture_date = picture_dates[index],
+                       lens_magnification = lens_magnifications[index])
+  }
+  else{
+    warning(paste("This directory", directory_list[index], "does not exist. Skipping"))
+  }
+}
+setwd(current_directory)
+
+```
+
+We could also add these checks before the for loop above to make sure that our input is correct:
+
+```{r multi_directory_checks, eval=FALSE}
+# Check that the parameter lists and directory lists are the same ----
+if(length(directory_list) != length(microscopes)){
+  stop(paste("There are", length(directory_list), "directories given, but only", length(microscopes), "microscope information provided"), call.=FALSE)
+}
+if(length(directory_list) != length(antibodies)){
+  stop(paste("There are", length(directory_list), "directories given, but only", length(antibodies), "antibody information provided"), call.=FALSE)
+}
+if(length(directory_list) != length(picture_dates)){
+  stop(paste("There are", length(directory_list), "directories given, but only", length(picture_dates), "picture dates provided"), call.=FALSE)
+}
+if(length(directory_list) != length(microscopes)){
+  stop(paste("There are", length(directory_list), "directories given, but only", length(lens_magnifications), "lens magnification information provided"), call.=FALSE)
+}
+
+```
 
 ## Improving documentation and naming
 
@@ -96,66 +154,27 @@ What are your questions about this workflow?
 1. Menu bar > Code > Insert Roxygen skeleton
 1. Fill in the parameters with descriptions
 
-## Adding functionality
-
-(in development)
-
-### Running on multiple folders
-
-Can we run this script on a bunch of directories?
-
-```{r multi_directory eval=FALSE}
-
-# Store current directory to get back to it at the end
-current_directory <- getwd()
-
-# This can be coded during runtime or provided as an input file
-directory_list <- read.csv("list_of_directories.csv")
-directory_list <- c("dirA", "dirB", "dirC")
-
-# Parameters for renaming files can be provided as four separate vectors
-microscopes <- c("BF","CF","EM")
-antibodies <- c("Thrb488dkDAPI","Exosc3488nucHoechst","mtDNAgold")
-picture_dates <- c("20200529","20200101","20191130")
-lens_magnifications <- c("20x2_0","40x","TEM")
-
-# Check that the parameter lists and directory lists are the same
-if(length(directory_list) != length(microscopes)){
-    stop(paste("There are", length(directory_list), "directories given, but only", length(microscopes), "microscope information provided"), call.=FALSE)
-}
-if(length(directory_list) != length(antibodies)){
-    stop(paste("There are", length(directory_list), "directories given, but only", length(antibodies), "antibody information provided"), call.=FALSE)
-}
-if(length(directory_list) != length(picture_dates)){
-    stop(paste("There are", length(directory_list), "directories given, but only", length(picture_dates), "picture dates provided"), call.=FALSE)
-}
-if(length(directory_list) != length(microscopes)){
-    stop(paste("There are", length(directory_list), "directories given, but only", length(lens_magnifications), "lens magnification information provided"), call.=FALSE)
-}
-
-for(index in 1:length(directory_list)){
-    if(dir.exists(directory_list[index])){
-        setwd(directory_list[index])
-        batch_rename_files(microscope = microscopes[index],
-                           antibody = antibodies[index],
-                           picture_date = picture_dates[index],
-                           lens_magnification = lens_magnifications[index])
-    }
-    else{
-        warning(paste("This directory", directory_list[index], "does not exist. Skipping"))
-    }
-}
-setwd(current_directory)
-
-```
-
 ### Helper messages
 
 Should we have it print a message when completed, identifying the log file?
 
-## More practice 
+## Discussion
 
-(in development)
+What are your questions about this workflow? 
+
+### Working directory
+
+Where the script is vs. where the files are vs. where your working directory is
+- where should this script "live" on Carmen's computer?
+  - maybe a folder called "analysis" from her home directory
+
+### Naming things
+
+**Dates** and [naming things](https://speakerdeck.com/jennybc/how-to-name-files): recommend YYYYMMDD not YYMMDD. (even better: YYYY-MM-DD)
+
+Recommend not using "." because can be confused with file extension
+
+## More practice 
 
 ### What is wrong here: 
 
