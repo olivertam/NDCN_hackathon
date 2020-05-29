@@ -68,9 +68,9 @@ setwd(here("rename_files_examples", "test_files"))
 
 ## rename files 
 batch_rename_files(microscope = "BF",
-             antibody = "Thrb488dkDAPI", 
-             picture_date = "20200522",
-             lens_magnification = "20x2_0")
+                   antibody = "Thrb488dkDAPI", 
+                   picture_date = "20200522",
+                   lens_magnification = "20x2_0")
 
 ```
 
