@@ -74,34 +74,43 @@ batch_rename_files(microscope = "BF",
 
 ```
 
+This will return files called, for example, `CF-Thrb488dkDAPI_20200522_20X2_0-01.jpg`, which has the format `microscope–antibody_YYYYMMDD_magnification–#.jpg`
+
+What happens if you type `n` to the prompts?
+
 ## Testing on Carmen's computer
 
 Let's try this again on Carmen's computer and discuss!
 
-## Adding functionality
+Now that it works on Carmen's computer, we can start talking about how it could be improved.
+
+
+## Improvements 
 
 What are ideas we'd like to improve?
 
-### Running on multiple folders
+### Running R script on multiple folders
 
 Can we run this script on a bunch of directories?
 
+We could provide several inputs for microscopes, antibodies, picture_dates, and lens_magnifications, and also several inputs for the directories filepaths. Here is what this could look like: 
+
 ```{r multi_directory, eval=FALSE}
 
-# Store current directory to get back to it at the end
+## Store current directory to get back to it at the end
 current_directory <- getwd()
 
-# This can be coded during runtime or provided as an input file
-directory_list <- read.csv("list_of_directories.csv")
-directory_list <- c("dirA", "dirB", "dirC")
+## This can be set 10 when you run the function (i.e. in this RMarkdown file) or  2) provided as an input file
+directory_list <- c("dirA", "dirB", "dirC")           # Option 1
+directory_list <- read.csv("list_of_directories.csv") # Option 2
 
-# Parameters for renaming files can be provided as four separate vectors
+## Parameters for renaming files can be provided as four separate vectors
 microscopes <- c("BF","CF","EM")
 antibodies <- c("Thrb488dkDAPI","Exosc3488nucHoechst","mtDNAgold")
 picture_dates <- c("20200529","20200101","20191130")
 lens_magnifications <- c("20x2_0","40x","TEM")
 
-# loop through directory_list ----
+## loop through directory_list ----
 for(index in 1:length(directory_list)){
   if(dir.exists(directory_list[index])){
     setwd(directory_list[index])
@@ -137,15 +146,26 @@ if(length(directory_list) != length(microscopes)){
 
 ```
 
+## R script functionality
+
+- Do we want to rename the script and function?
+- Do we want to rename the "Converted" folder?
+- What if we wanted to reorder the name so that the date came just before the counter, e.g.:  `CF-Thrb488dkDAPI_20X2_0_20200522-01.jpg`
+
+We would focus on the `prefix` variable in `batch_rename_files.R`: 
+
+```{r prefix, eval=FALSE}
+ ## Create new filename prefix and log information ----
+  prefix <- paste(microscope, antibody, picture_date, lens_magnification, sep="_")
+  prefix <- sanitize(prefix)
+```
+
+
 ## Improving documentation and naming
 
 - Let's add more comments to the function and to this .Rmd document so that you feel comfortable using it. 
 - try using `----` in your code chunk comments so that you can navigate at the bottom of the file editor
 
-### Renaming the script and functions 
-
-- Do we want to rename the script or functions?
-- Do we want to rename the "Converted" folder?
 
 ### Adding function documentation with ROxygen
 
@@ -157,6 +177,7 @@ if(length(directory_list) != length(microscopes)){
 ### Helper messages
 
 Should we have it print a message when completed, identifying the log file?
+
 
 ## Discussion
 
