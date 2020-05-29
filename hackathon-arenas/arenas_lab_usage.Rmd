@@ -50,7 +50,14 @@ Start off by RESTARTING R. File menu > Session > Restart R.
 
 ## libraries ---
 ## `here` package helps manage filepaths so that this will work more easily on different computers
-library(here) # install.packages("here")
+
+## checks if the `here` package is installed and usable
+## installs `here` package if not installed
+if(! require(here)){
+    install.packages("here")
+}
+
+library(here) # load `here` package
 
 ## source the script so you can use it
 source(here("hackathon-arenas", "batch_rename_files.r"))
