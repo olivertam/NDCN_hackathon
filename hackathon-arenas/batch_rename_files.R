@@ -27,26 +27,26 @@ batch_rename_files <- function(microscope, antibody, picture_date, lens_magnific
     stop(paste("Lens magnification not provided"), call. = FALSE)
   }
   
-  ## User input required to confirm parameters ----
-  confirmParameter <- function(param_name, parameter){
-    cat("\nValue provided for ", param_name, ": ", parameter, "\n", sep="")
-    answer <- readline(prompt = "Is this correct? (y/n): ")
-    if(answer != "y" & answer != "Y"){
-      stop(paste("Wrong", param_name, "provided"), call. = FALSE)
-    }
-  }
-  
-  confirmParameter("microscope", microscope)
-  confirmParameter("antibody", antibody)
-  confirmParameter("picture date", picture_date)
-  confirmParameter("lens magnification", lens_magnification)
-  log <- c("Parameters provided:", "", 
+  # ## User input required to confirm parameters ----
+  # confirmParameter <- function(param_name, parameter){
+  #   cat("\nValue provided for ", param_name, ": ", parameter, "\n", sep="")
+  #   answer <- readline(prompt = "Is this correct? (y/n): ")
+  #   if(answer != "y" & answer != "Y"){
+  #     stop(paste("Wrong", param_name, "provided"), call. = FALSE)
+  #   }
+  # }
+  # 
+  # confirmParameter("microscope", microscope)
+  # confirmParameter("antibody", antibody)
+  # confirmParameter("picture date", picture_date)
+  # confirmParameter("lens magnification", lens_magnification)
+  log <- c("Parameters provided:", "",
            paste("- Microscope:", microscope),
-           paste("- Antibody:",antibody), 
+           paste("- Antibody:",antibody),
            paste("- Picture date:", picture_date),
            paste("- Lens magnification:", lens_magnification),
            "Please note that any illegal characters or white spaces will be removed from file names", "")
-  
+
   ## Clean up illegal characters ----
   ## adapted from `path_sanitize()` from `fs` package https://fs.r-lib.org
   sanitize <- function(file_name, replacement = ""){
