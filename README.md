@@ -53,7 +53,7 @@ This was actually as far as we got in our 1.5 hours together, [despite having mo
 - There was setup I could have simplified, especially installing the `here` package and making `test_files` a subfolder within the `hackathon-arenas` folder
 - a few of RMarkdown's new features gave us unanticipated problems, including that 1) you can't "Run" `setwd()` from a code chunk and 2) that you can't "Run" or copy-paste code that requires user-input. 
 
-These RMarkdown features are actually helping you have reproducible practices, since having `setwd()` in your R code is highly indicitive of a non-reproducible workflow because it will likely contain a a [`path/that/only/works/on/my/machine`](https://rstats.wtf/project-oriented-workflow.html#setwd). And user input will not be possible from a knitted RMarkdown document, so it is better practice to not have that included either. However, it's nice to be able to have your first R experience in an RMarkdown document, so I will look into the options for these settings. During the hackathon we trouble-shooted by 1) copy-pasting `setwd()` in the console instead of "Running" it and 2) by commenting-out the user-input (which was for confirmaion purposes only so not essential to the function's operations), re-sourcing the .R script, and re-running the function call. 
+These RMarkdown features are actually helping you have reproducible practices, since having `setwd()` in your R code is highly indicative of a non-reproducible workflow because it will likely contain a a [`path/that/only/works/on/my/machine`](https://rstats.wtf/project-oriented-workflow.html#setwd). And user input will not be possible from a knitted RMarkdown document, so it is better practice to not have that included either. However, it's nice to be able to have your first R experience in an RMarkdown document, so I will look into the options for these settings. During the hackathon we trouble-shooted by 1) copy-pasting `setwd()` in the console instead of "Running" it and 2) by commenting-out the user-input (which was for confirmation purposes only so not essential to the function's operations), re-sourcing the .R script, and re-running the function call. 
 
 **We discussed next steps and improvements** to this workflow for the Arenas lab.
 
@@ -63,7 +63,7 @@ The first was about what `batch_rename_files` does. It is a solid starting point
 - it currently names files afresh, ignoring any previous name. But we would like to *rename* them, which means extracting information from the current name and using some of that information for the new name
 - we'd also like part of the renaming to include creating subfolders with appropriate naming
 
-So what this will look like is adding more features to the `batch_rename_files` function (and likely breaking some of this into additional functions) that operate on conditionality (if X then Y) and also uses regular expressions so we can parse out information from the names and use them in both the condition and the new filename.
+So what this will look like is adding more features to the `batch_rename_files` function (and likely breaking some of this into additional functions) that operate on conditionally (if X then Y) and also uses regular expressions so we can parse out information from the names and use them in both the condition and the new filename.
 
 We'll be discussing this more in Office Hours next week, and will likely have a follow-up hackathon to put some of this into practice. Thanks everyone for joining and for reading!
 
