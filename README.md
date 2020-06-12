@@ -1,4 +1,4 @@
-# NDCN_compbio
+# NDCN_hackathon
 Chan Zuckerberg Initiative's Neurodegeneration Challenge Network (CZI NDCN) CompBio Office Hours 
 
 ## Hackathon Summary, May 29, 2020
