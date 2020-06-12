@@ -38,7 +38,7 @@ batch_rename_files <- function(microscope, antibody, picture_date, lens_magnific
   # 
   # confirmParameter("microscope", microscope)
   # confirmParameter("antibody", antibody)
-  # confirmParameter("picture date", picture_date)
+  # confirmParameter("picture date", picture_date) 
   # confirmParameter("lens magnification", lens_magnification)
   log <- c("Parameters provided:", "",
            paste("- Microscope:", microscope),
