@@ -1,0 +1,26 @@
+Installing reticulate
+
+```{r}
+
+install.packages("reticulate")
+
+Sys.which("python") # /usr/bin/python" 
+
+
+library(reticulate)
+
+use_python("/usr/local/bin/python")
+
+Sys.which("python") # "/usr/bin/python" still
+
+use_virtualenv("myenv")
+
+```
+
+
+```{python}
+import pandas
+
+
+```
+
