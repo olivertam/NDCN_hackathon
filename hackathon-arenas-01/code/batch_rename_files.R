@@ -74,7 +74,7 @@ batch_rename_files <- function(microscope, antibody, picture_date, lens_magnific
   
   ## Identify files and rename them ----
   files <- setdiff(list.files(".", full.names = TRUE), list.dirs(recursive = FALSE, full.names = TRUE))
-  files <- setdiff(files, "./batch_rename_files.r")
+  files <- setdiff(files, "./batch_rename_files.R")
   counter <- sprintf("%03d", 1:length(files))
   dir.create("Converted", showWarnings=FALSE)
   
