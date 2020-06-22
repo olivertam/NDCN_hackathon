@@ -49,14 +49,14 @@ please add your own notes!
 
 ## Code Setup
 
-*TODO: if Shanzheng and Carmen use RStudio, can delete `here` requirement for the hackathon because it will automatically work with relative filepaths from the repo*
-
 Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).
 
 Look inside `hackathon-arenas-02` folder: it has a `NDCN_hackathon02.Rproj` file; double-click that .Rproj file to open RStudio to this working directory. We will be working today in RStudio.
 
 We will work from this `arenas_lab_usage.Rmd` document today (also in
 `hackathon-arenas-02` folder). It is an R Markdown document, which combines simple text and R code. You can use the Table of Contents at the bottom of the file to navigate. And please add your own notes!
+
+*TODO: if Shanzheng and Carmen use RStudio, can delete `here` requirement for the hackathon because it will automatically work with relative filepaths from the repo*
 
 ```{r setup}
 ## checks if the `here` package is installed, if not, installs 
@@ -82,8 +82,9 @@ results  <- check_file_names("my_folder")
 ```
 
 The user provides a folder (`my_folder`) containing files with names
-that should be checked. The code that finds all the image files
+that should be checked. The program that finds all the image files
 (ending in .czi .tif or .tiff) and checks their names. 
+
 The first command prints the results to screen, but does not save that
 information.
 The second command saves the results to a variable (`results`), but
@@ -93,40 +94,133 @@ prints to screen).
 
 ### Oliver's test files
 
-In the folder, `files_oliver`
+There are 3 TIFF files in `files_oliver`, which are named loosely according to
+the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
 check_file_names(here('files_oliver'))
 ```
 
-### Julie's test files
-3 files:
+If we look at the first file checked: 
+`NES-SAI2d15-CS_200514-01_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200520_CF_10Xz1-2.tif`
 
-1. Julie forgot and put her initials with an underscore rather than dash
-2. Julie deleted the image capture date
-3. Julie deleted half of the dye/antibodies/transcript
+The program suggests that it's not in the right format:
+```
+The file name does not fit the expected nomenclature.
+Expected sections:
+  Experiment name & initial
+  Experiment date and number
+  Condition & replicate
+  Dye/antibodies/transcript
+  Image capture date
+  Microscope type
+  Lens, zoom & image number
 
-
-```{r}
-logfile <- check_file_names(here('files_julietest'))
+It may be missing sections, as it only found 6
+  NES-SAI2d15-CS
+  200514-01
+  DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
+  200520
+  CF
+  10Xz1-2
+Please double-check.
 ```
 
-It behaves as we expect.
+If we try to match the expected sections with the detected sections,
+you can see that we appear to be missing the third section (Condition
+& replicate). The program will not do anything else, as we want the user
+to go in and add the missing information.
 
-### Test run
+For the second file: 
+`NES-SAI2d15-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-1.tif`
+
+This is the output:
+```
+Destination folder: NES-SAI2d15-CS/200514-01
+The current name does not fit the nomenclature exactly.
+Current name: NES-SAI2d15-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1
+Updated name: NES-SAI2d15-CS_200514-01_GFP-1_DAPI+rbAADC-dk488+shTH-dk555_200520_CF_10X-z1-1
+```
+
+As part of the Arenas lab's workflow, they were hoping to
+automatically move files into subfolders based on the information in the first two
+sections. Thus, the code outputs the expected destination folder:
+`NES-SAI2d15-CS/200514-01` for the user to double-check/confirm.
+
+While the program did find all the information needed for the file
+name, it also made suggestions to the file name that "better" suits the
+nomenclature system. In particular, it is suggesting that the
+antibodies to have a two-letter species code that is lowercase (`Rb`
+to `rb`, and the target protein to be uppercase (`Th` to `TH`).
+We can use this information, in combination with a modified version of
+our renaming tool from the last hackathon, to automatically rename these
+files if necessary.
+
+For the third file:
+`NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
+
+This is the output:
+```
+Destination folder: NES-SAI2d15-CS/200514-01
+Name is consistent with nomenclature
+```
+
+Again, the program indicates the folder where the file should go, and
+lets the user know that the file seems to be named correctly.
+
+### Julie's test files
+[//]: # I'm thinking of adding your example of the extra field (example 3) to the 
+[//]: # "files_oliver" folder (which could be renamed back to files), but skipping 
+[//]: # the others. 
+[//]: # I have a feeling that things might take longer than expected, and processing
+[//]: # Carmen's files might be closer to the "real world" scenario.
+Here are 3 files in `files_julietest` that are named incorrectly:
+
+1. Julie forgot to add the image capture date 
+2. Julie combined the condition/replicate information with the
+   dye/antibodies/transcript section
+3. Julie forgot and put her initials with an underscore rather than a dash.
+
+Let's see if the program picks that up
+
+```{r}
+check_file_names(here('files_julietest'))
+```
+
+In all three cases, it seems to notice that there is a wrong number of
+sections, and gives a message that hopefully allows the user to
+identify where the mistake might be introduced.
+
+### Carmen's test files
+
+We had Carmen from the Arenas lab try to name a few files according to
+their nomenclature (which is new), and see how well the program can
+help her pick up any issues. As it takes time for people to become
+familiar with changes to their workflow, a program like this would
+help ease people into the new naming system.
+
+### Checking multiple folders
+[//]: # This is totally optional.
+This program can be used as part of a larger workflow to check
+multiple folders.
+The following R code lists all the directory in the current folder
+(which will include all three folders with image files), and will run
+the program on each of those folders.
+Furthermore, it will also save the results into a file called
+`name_checking_log.txt` that you can look at once all the folders have been checked
 
 ```{r multiFolder}
 all_dirs = list.dirs()
 for(i in 1:length(all_dirs)){
-  cat(paste("Current folder is:",all_dirs[i]), "\n\n")
   logfile = c(paste("Current folder is:",all_dirs[i]),"")
-  logfile = c(logfile,check_file_names(all_dirs[i]))
+  logfile = c(logfile,check_file_names(all_dirs[i]),print2screen=FALSE)
 }
 
 write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
 
 ```
 
+## Tweaking the program
 
 ---
 ## Our internal testing

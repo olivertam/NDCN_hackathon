@@ -92,11 +92,11 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
 
     ## Subroutine to extract the information from file name, and return it ----
     extract_information <- function(name){
-        name = tools::file_path_sans_ext(name)
         extension <- tools::file_ext(files[i])
         output = "####"
         output = c(output,paste("Current file:",name))
         output = c(output,"")
+        name = tools::file_path_sans_ext(name)
 
         ## Based on the nomenclature, there should be 7 fields separated by underscore
         ## If it doesn't find the 7 fields, then it will return with an error message
