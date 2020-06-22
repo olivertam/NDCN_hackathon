@@ -1,0 +1,124 @@
+---
+title: "Arenas lab name checker usage"
+author: "Oliver Tam and Julie Lowndes"
+date: "6/26/2020"
+output: html_document
+---
+
+## Introduction
+
+This document is to keep track of our workflow using `name_checker.R`,
+a script to check that files conform to the Arenas lab convention: 
+
+Seven (7) sections separated by underscores ("_")
+1. Experimental name and researcher initials
+       e.g. NES-SAI2d15-CS
+2. Experiment date and experiment number
+       e.g. 200514-01
+3. Condition and replicate number
+       e.g. Vehicle-1
+4. Dye, antibodies or transcript
+       Different reagents are separated by pluses ("+")
+       Primary and secondary antibodies are linked by dashes ("-")
+           Two letter code for the animal species generating the antibody
+           E.g. rbAldh1-dk555
+                -> rabbit anti-Aldh1 (primary) with
+                   donkey Alexa Fluor 555 (secondary)
+       Full example: DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
+5. Image capture date
+       e.g. 200519
+6. Microscope type
+       e.g. CF
+7. Lens, zoom and image number
+       e.g. 10Xz1-1
+
+Example file name:
+`NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200519_CF_10Xz1-1.tiff`
+
+## Setup
+
+Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).  
+
+Look inside `hackathon-arenas-02` folder: it has a `NDCN_hackathon02.Rproj` file; double-click that .Rproj file to open RStudio to this working directory. We will be working today in RStudio.
+
+We will work from this `arenas_lab_usage.Rmd` document today (also in
+`hackathon-arenas-02` folder). It is an R Markdown document, which combines simple text and R code. You can use the Table of Contents at the bottom of the file to navigate. And please add your own notes!
+
+
+## Testing using name_checker.R
+
+```{r setup}
+## checks if the `here` package is installed, if not, installs 
+if(! require(here)){
+  install.packages("here")
+}
+
+## load libraries
+library(here) # load `here` package
+
+## source the script so you can use it
+source(here("code", "name_checker.R"))
+```
+
+## check and rename files
+
+### How to use it
+
+```{r usage1 eval=FALSE}
+check_file_names("my_folder")
+
+results  <- check_file_names("my_folder",print2screen=FALSE)
+
+results  <- check_file_names("my_folder")
+```
+
+The user provides a folder (`my_folder`) containing files with names
+that should be checked. The code that finds all the image files
+(ending in .czi .tif or .tiff) and checks their names. 
+The first command prints the results to screen, but does not save that
+information.
+The second command saves the results to a variable (`results`), but
+doesn't print it to screen.
+The third command does both (save the results to `results`, and also
+prints to screen).
+
+### Oliver's test files
+
+In the folder, `files_oliver`
+
+```{r oliver_test}
+check_file_names(here('files_oliver'))
+```
+
+### Julie's test files
+3 files:
+
+1. Julie forgot and put her initials with an underscore rather than dash
+2. Julie deleted the image capture date
+3. Julie deleted half of the dye/antibodies/transcript
+
+
+```{r}
+logfile <- check_file_names(here('files_julietest'))
+```
+
+It behaves as we expect.
+
+### Test run
+
+```{r multiFolder}
+all_dirs = list.dirs()
+for(i in 1:length(all_dirs)){
+  cat(paste("Current folder is:",all_dirs[i]), "\n\n")
+  logfile = c(paste("Current folder is:",all_dirs[i]),"")
+  logfile = c(logfile,check_file_names(all_dirs[i]))
+}
+
+write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
+
+```
+
+
+
+
+

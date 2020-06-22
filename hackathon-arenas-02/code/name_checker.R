@@ -24,9 +24,11 @@
 ##                -> rabbit anti-Aldh1 (primary) with
 ##                   donkey Alexa Fluor 555 (secondary)
 ##       Full example: DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
-## Section 5: Microscope type
+## Section 5: Image capture date
+##       e.g. 200519
+## Section 6: Microscope type
 ##       e.g. CF
-## Section 6: Lens, zoom and image number
+## Section 7: Lens, zoom and image number
 ##       e.g. 10Xz1-1
 ##
 ## Example file name:
@@ -52,7 +54,7 @@ sanitize <- function(file_name, replacement = ""){
 }
 
 ## Main subroutine for checking that file names match the expected nomenclature
-check_file_names <- function(folder,verbose=FALSE){ 
+check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){ 
 
     ## Subroutine to check antibody nomenclature
     validateAntibody <- function(label){
@@ -216,8 +218,10 @@ check_file_names <- function(folder,verbose=FALSE){
         results = extract_information(current_file)
 
         ## Print results to screen
-        screenOutput = paste(results,collapse="\n")
-        cat(screenOutput, "\n")
+        if(print2screen){
+            screenOutput = paste(results,collapse="\n")
+            cat(screenOutput, "\n")
+        }
 
         ## Store the results in the log file
         log = c(log,results,"")
