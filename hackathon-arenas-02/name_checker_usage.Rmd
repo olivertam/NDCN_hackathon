@@ -10,42 +10,53 @@ output: html_document
 This document is to keep track of our workflow using `name_checker.R`,
 a script to check that files conform to the Arenas lab convention: 
 
-Seven (7) sections separated by underscores ("_")
-1. Experimental name and researcher initials
-       e.g. NES-SAI2d15-CS
-2. Experiment date and experiment number
-       e.g. 200514-01
-3. Condition and replicate number
-       e.g. Vehicle-1
-4. Dye, antibodies or transcript
-       Different reagents are separated by pluses ("+")
-       Primary and secondary antibodies are linked by dashes ("-")
-           Two letter code for the animal species generating the antibody
-           E.g. rbAldh1-dk555
-                -> rabbit anti-Aldh1 (primary) with
-                   donkey Alexa Fluor 555 (secondary)
-       Full example: DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
-5. Image capture date
-       e.g. 200519
-6. Microscope type
-       e.g. CF
-7. Lens, zoom and image number
-       e.g. 10Xz1-1
+We expect 7 sections, each separated by an underscore `_`:
 
-Example file name:
+1. Experimental name and researcher initials
+2. Experiment date and experiment number
+3. Condition and replicate number
+4. Dye, antibodies or transcript
+5. Image capture date
+6. Microscope type
+7. Lens, zoom and image number
+
+Example:
+
 `NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200519_CF_10Xz1-1.tiff`
 
-## Setup
+Where:
 
-Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).  
+- Experiment name & initial: `NES-SAI2d15-CS`. experiment name is NES-SAI2d15, CS is Carmen Salto
+- Experiment date and number: `200514-01`. 14 May 2020, number 1
+- Condition & replicate: `Vehicle-1`. Vehicle condition, replicate 1
+- Dye/antibodies/transcript: `DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647`. Each element separated by `-`, if multiple separated by `+`
+- Image capture date: `200520`: 20 May 2020
+- Microscope type: `CF`. Confocal microscope 
+- Lens, zoom & image number: `10X-z2-3`. 10x lens, 2 zoom, number 3.
+
+## RStudio setup
+
+We already have the repo cloned to our computers. (You can also download it and come to Office Hours next week to get help with setting up GitHub). 
+
+Open the repo from RStudio File > Open Project... or in Finder/Windows Explorer by double-clicking the `NDCN_hackathon.Rproj` file.
+
+Navigate to the "hackathon-arenas-02" folder. (You'll see we've tidied a bit since Hackathon 1).
+
+We will work from this `name_checker_usage.Rmd` document today. It is
+an R Markdown document, which combines simple text and R code. You can
+use the Table of Contents at the bottom of the file to navigate. And
+please add your own notes!
+
+## Code Setup
+
+*TODO: if Shanzheng and Carmen use RStudio, can delete `here` requirement for the hackathon because it will automatically work with relative filepaths from the repo*
+
+Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).
 
 Look inside `hackathon-arenas-02` folder: it has a `NDCN_hackathon02.Rproj` file; double-click that .Rproj file to open RStudio to this working directory. We will be working today in RStudio.
 
 We will work from this `arenas_lab_usage.Rmd` document today (also in
 `hackathon-arenas-02` folder). It is an R Markdown document, which combines simple text and R code. You can use the Table of Contents at the bottom of the file to navigate. And please add your own notes!
-
-
-## Testing using name_checker.R
 
 ```{r setup}
 ## checks if the `here` package is installed, if not, installs 
@@ -60,9 +71,7 @@ library(here) # load `here` package
 source(here("code", "name_checker.R"))
 ```
 
-## check and rename files
-
-### How to use it
+## How to use it
 
 ```{r usage1 eval=FALSE}
 check_file_names("my_folder")
@@ -119,6 +128,35 @@ write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.nam
 ```
 
 
+---
+## Our internal testing
+*Plan to delete pre-hackathon*
+
+### Julie test files
+3 files:
+
+1. Julie forgot and put her initials with an underscore rather than dash
+2. Julie deleted the image capture date
+3. Julie deleted half of the dye/antibodies/transcript
 
 
+```{r}
+logfile <- check_file_names(here('hackathon-arenas-02/files_julietest'))
+```
 
+It behaves as we expect.
+
+### Test run
+
+```{r test-run}
+all_dirs = list.dirs()
+logfile = vector()
+for(i in 1:length(all_dirs)){
+  cat(paste("Current folder is:",all_dirs[i]), "\n\n")
+  logfile = c(paste("Current folder is:",all_dirs[i]),"")
+  logfile = c(logfile,check_file_names(all_dirs[i]))
+}
+
+write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
+
+```
