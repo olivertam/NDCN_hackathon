@@ -51,15 +51,8 @@ sanitize <- function(file_name, replacement = ""){
     return(file_name)
 }
 
-## Subroutine to capitalize the first letter, and make other letters lowercase ##
-firstCaps <- function(string){
-    string = tolower(string) 
-    newString = paste0(toupper(substring(string,1,1)),substring(string,2),collapse=" ")
-    return(newString)
-}
-
 ## Main subroutine for checking that file names match the expected nomenclature
-check_file_names <- function(folder){ 
+check_file_names <- function(folder,verbose=FALSE){ 
 
     ## Subroutine to check antibody nomenclature
     validateAntibody <- function(label){
@@ -71,11 +64,12 @@ check_file_names <- function(folder){
             ### The only way to know is when they read through the log files and notice something weird.
             ### Improvement: Check against a known list of species
             species = substr(antibodies[i],1,2)
+            ## This converts the 2-letter species code to all lowercase
             species = tolower(species)
             
             target = substr(antibodies[i],3,nchar(antibodies[i]))
+            ## This converts the expected gene name to all uppercase
             target = toupper(target)
-          # target = firstCaps(target) # Both options available
             antibodies[i] = paste0(species,target)
         }
         checkedLabel = paste(antibodies, collapse = "-")
@@ -83,12 +77,10 @@ check_file_names <- function(folder){
     }
 
     ## Identify files to be checked ----
-    files <- setdiff(list.files(folder, full.names = TRUE), list.dirs(recursive = FALSE))
+    files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$",full.names = TRUE), list.dirs(recursive = FALSE))
     if(length(files) < 1){
         return()
     }
-    files <- setdiff(files, "./name_checker.R")
-    files <- setdiff(files, "./name_checking_log.txt")
 
     ## Setting up log file ----
     today <- Sys.time()
@@ -129,35 +121,48 @@ check_file_names <- function(folder){
         ## Getting the condition and replicate information.
         ## Assumption: the replicate number is after the last dash
         field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
-        output = c(output,paste("Condition:",paste(head(field,n=-1),sep="-")))
-        output = c(output,paste("Replicate:",tail(field,n=1)))
-        
+        if(verbose){
+            output = c(output,paste("Condition:",paste(head(field,n=-1),sep="-")))
+            output = c(output,paste("Replicate:",tail(field,n=1)))
+        }
         ## Getting the dye, antibody or transcript information.        
-        output = c(output,"Dye/antibody/transcript:")      
         field = unlist(strsplit(file_info[4], "+", fixed=TRUE))
 
+        if(verbose){
+            output = c(output,"Dye/antibody/transcript:")
+        }
+        
         ## Assumption: each antibody label is a pair of antibodies separated by a dash. If a dash is not present, assume that it's a dye or transcript
         ### Caveat: if the dye or transcript has a dash, it would break this! May have to find way to account for this.
         ### Use another delimiter (like an equal sign or a hashtag)?
+        
         for(i in 1:length(field)){
             if(grepl("-",field[i])){
                 field[i] = validateAntibody(field[i])
             }
-            output = c(output,paste0("    ",field[i]))
+            if(verbose){
+                output = c(output,paste0("    ",field[i]))
+            }
         }
         file_info[4] = paste(field,collapse="+")
 
         ## Getting the date of image capture
-        output = c(output,paste("Capture date:",file_info[5]))
+        
         date.format = "%y%m%d"
         ## This just checks that the values are compatible with it being a date, but does not ensure cases where months, days (and even last two year digits) are interchangeable.
         if(is.na(as.Date(file_info[5],date.format))){
-            output = c(output,paste("    Date is not in the expected YYMMDD format"))
+            output = c(output,paste(file_info[5], "is not a date in the expected YYMMDD format"))
+        }else{
+            if(verbose){
+                output = c(output,paste("Capture date:",file_info[5]))
+            }
         }
 
         ## Getting the microscope type
         ### Improvement: have a list of acceptable terms to check against
-        output = c(output,paste("Microscope type:",file_info[6]))
+        if(verbose){
+            output = c(output,paste("Microscope type:",file_info[6]))
+        }
 
         ## Getting the lens, zoom and image number
         ## Assumption: it is in the format of 10Xz1-1 or 10X-z1-1
@@ -168,30 +173,36 @@ check_file_names <- function(folder){
             if(length(lens) < 2){
                 output = c(output,paste("Cannot find process lens or zoom information from", file_info[7]))
             }else{
-                output = c(output,paste0("Lens: ",lens[1],"X"))
                 lens[2] = sub("z","",lens[2])
-                output = c(output,paste("Zoom level:",lens[2]))
-                output = c(output,paste("Picture #:", field[-1]))
+                if(verbose){
+                    output = c(output,paste0("Lens: ",lens[1],"X"))
+                    output = c(output,paste("Zoom level:",lens[2]))
+                    output = c(output,paste("Picture #:", field[-1]))
+                }
                 file_info[7] = paste0(lens[1],"X-z",lens[2],"-",field[-1])
             }
         }else{
-            output = c(output,paste0("Lens: ",toupper(field[1])))
             field[2] = sub("z","",field[2])
-            output = c(output,paste0("Zoom level: ",tolower(field[2])))
-            output = c(output,paste("Picture #:", field[-1]))
+            if(verbose){
+                output = c(output,paste0("Lens: ",toupper(field[1])))
+                output = c(output,paste0("Zoom level: ",tolower(field[2])))
+                output = c(output,paste("Picture #:", field[-1]))
+            }
             file_info[7] = paste0(toupper(field[1]),"-","z",field[2],"-",field[3])
-        }        
-        output = c(output,"")
+        }
+        if(verbose){
+            output = c(output,"")
+        }
 
         ## Generate a "cleaned" name after read it through, and check against actual name. If different, print a message indicating as such
         ### Idea: rename the file to the "cleaned" name
         clean_name = paste(file_info,collapse="_")
         if(name != clean_name){
-            output = c(output,paste("The current name does not fit the nomenclature exactly.\nPlease consider changing it."))
+            output = c(output,paste("The current name does not fit the nomenclature exactly."))
             output = c(output,paste("Current name:",name))
             output = c(output,paste("Updated name:",clean_name))
         }else{
-            output = c(output,"Name is perfectly consistent with nomenclature")
+            output = c(output,"Name is consistent with nomenclature")
         }
         output = c(output,"")
         return(output)
@@ -200,28 +211,28 @@ check_file_names <- function(folder){
     ## Iterate through each file found and extract the information ----
     for(i in 1:length(files)){   # i = 1
         ## Following line might not be fully compatible with Windows
-        current_file = gsub("./", "", files[i]) 
+        current_file = basename(files[i])
         current_file = sanitize(current_file)
         results = extract_information(current_file)
 
         ## Print results to screen
         screenOutput = paste(results,collapse="\n")
         cat(screenOutput, "\n")
-#        confirmResults()
 
         ## Store the results in the log file
         log = c(log,results,"")
     }
-
-    ## User input required to confirm results ----
-    ## Not usable on RMarkdown, but might be a good thing for production code
-    # confirmResults <- function(){
-    #    answer <- readline(prompt = "Is this correct? (y/n): ")
-    #    if(answer != "y" & answer != "Y"){
-    #        stop(paste("There might be an error in the file name"), call. = FALSE)
-    #    }
-    # }
     
     ## Return the log output after processing multiple files ----
-   return(log)
+    return(log)
 }
+
+## User input required to confirm results ----
+## Not usable on RMarkdown, but might be a good thing for production code
+# confirmResults <- function(){
+#    answer <- readline(prompt = "Is this correct? (y/n): ")
+#    if(answer != "y" & answer != "Y"){
+#        stop(paste("There might be an error in the file name"), call. = FALSE)
+#    }
+# }
+
