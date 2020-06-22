@@ -223,18 +223,5 @@ check_file_names <- function(folder){
     # }
     
     ## Return the log output after processing multiple files ----
-   # return(log)
+   return(log)
 }
-
-
-### Test run ###
-
-all_dirs = list.dirs()
-log = vector()
-for(i in 1:length(all_dirs)){
-    cat(paste("Current folder is:",all_dirs[i]), "\n\n")
-    log = c(paste("Current folder is:",all_dirs[i]),"")
-    log = c(log,check_file_names(all_dirs[i]))
-}
-write.table(log,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
-

@@ -18,7 +18,8 @@ source(here("hackathon-arenas-02", "code", "name_checker.R"))
 
 ## check and rename files ----
 
-check_file_names(here('hackathon-arenas-02/files'))
+logfile <- check_file_names(here('hackathon-arenas-02/files'))
+
 
 #NOTE: I commented out `return(log)` to prevent a duplicate & less reader-friendly printout
 
@@ -26,13 +27,13 @@ check_file_names(here('hackathon-arenas-02/files'))
 ### Test run ###
 
 all_dirs = list.dirs()
-log = vector()
+logfile = vector()
 for(i in 1:length(all_dirs)){
   cat(paste("Current folder is:",all_dirs[i]), "\n\n")
-  log = c(paste("Current folder is:",all_dirs[i]),"")
-  log = c(log,check_file_names(all_dirs[i]))
+  logfile = c(paste("Current folder is:",all_dirs[i]),"")
+  logfile = c(logfile,check_file_names(all_dirs[i]))
 }
-write.table(log,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
+write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
 
 
 
