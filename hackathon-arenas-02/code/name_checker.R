@@ -235,3 +235,4 @@ check_file_names <- function(folder,verbose=FALSE){
 #        stop(paste("There might be an error in the file name"), call. = FALSE)
 #    }
 # }
+

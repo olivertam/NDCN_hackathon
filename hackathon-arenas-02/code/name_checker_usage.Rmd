@@ -1,0 +1,48 @@
+---
+title: "Arenas lab name checker usage"
+author: "Oliver Tam and Julie Lowndes"
+date: "6/26/2020"
+output: html_document
+---
+
+## Testing using name_checker.R
+
+```{r setup}
+## checks if the `here` package is installed, if not, installs 
+if(! require(here)){
+  install.packages("here")
+}
+
+## load libraries
+library(here) # load `here` package
+
+## source the script so you can use it
+source(here("hackathon-arenas-02", "code", "name_checker.R"))
+```
+
+
+## check and rename files
+
+```{r}
+logfile <- check_file_names(here('hackathon-arenas-02/files'))
+```
+
+
+### Test run
+
+```{r test-run}
+all_dirs = list.dirs()
+logfile = vector()
+for(i in 1:length(all_dirs)){
+  cat(paste("Current folder is:",all_dirs[i]), "\n\n")
+  logfile = c(paste("Current folder is:",all_dirs[i]),"")
+  logfile = c(logfile,check_file_names(all_dirs[i]))
+}
+write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
+
+```
+
+
+
+
+
