@@ -17,6 +17,7 @@ for(i in 1:length(all_dirs)){
         log = c(log,paste("Current folder is:",all_dirs[i]),"")
         log = c(log,results)
     }
+    ignore = check_file_names(all_dirs[i],verbose=TRUE)
 }
 write.table(log,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
 
