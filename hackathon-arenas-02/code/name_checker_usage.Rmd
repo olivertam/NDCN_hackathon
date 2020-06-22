@@ -5,6 +5,21 @@ date: "6/26/2020"
 output: html_document
 ---
 
+## Introduction
+
+This document is to keep track of our workflow using `name_checker.R`, a script to check that files conform to the Arenas lab convention: 
+
+
+
+## Setup
+
+Download the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).  
+
+Look inside: it has a .Rproj file; double-click that .Rproj file to open RStudio to this working directory. We will be working today in RStudio.
+
+We will work from this `arenas_lab_usage.Rmd` document today. It is an R Markdown document, which combines simple text and R code. You can use the Table of Contents at the bottom of the file to navigate. And please add your own notes!
+
+
 ## Testing using name_checker.R
 
 ```{r setup}
