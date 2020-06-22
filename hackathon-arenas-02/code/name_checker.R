@@ -59,7 +59,6 @@ firstCaps <- function(string){
 }
 
 ## Main subroutine for checking that file names match the expected nomenclature
-
 check_file_names <- function(folder){ 
 
     ## Subroutine to check antibody nomenclature
@@ -129,7 +128,6 @@ check_file_names <- function(folder){
 
         ## Getting the condition and replicate information.
         ## Assumption: the replicate number is after the last dash
-
         field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
         output = c(output,paste("Condition:",paste(head(field,n=-1),sep="-")))
         output = c(output,paste("Replicate:",tail(field,n=1)))
@@ -225,7 +223,7 @@ check_file_names <- function(folder){
     # }
     
     ## Return the log output after processing multiple files ----
-    return(log)
+   # return(log)
 }
 
 
