@@ -60,7 +60,7 @@ if(! require(here)){
 library(here) # load `here` package
 
 ## source the script so you can use it
-source(file.path("hackathon-arenas-01","code", "batch_rename_files.r"))
+source(here("hackathon-arenas-01","code", "batch_rename_files.r"))
 
 ```
 

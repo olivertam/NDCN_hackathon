@@ -58,7 +58,7 @@ We will work from this `arenas_lab_usage.Rmd` document today (also in
 
 *TODO: if Shanzheng and Carmen use RStudio, can delete `here` requirement for the hackathon because it will automatically work with relative filepaths from the repo*
 
-```{r setup eval=FALSE}
+```{r setup}
 ## checks if the `here` package is installed, if not, installs 
 if(! require(here)){
   install.packages("here")
@@ -70,13 +70,26 @@ library(here) # load `here` package
 
 ## How to use it
 
-```{r usage}
-## Source the script so you can use it
-source(file.path("hackathon-arenas-02","code", "name_checker.R"))
+Run the following code block if you have the `here` package:
 
-## This gives you a list of parameters that the program would take
+```{r source_with_here}
+source(here("hackathon-arenas-02","code", "name_checker.R"))
+```
+
+If you have trouble with the `here package`, you can copy the
+following code into R:
+
+```{r source_no_here eval=FALSE}
+source(file.path("hackathon-arenas-02","code", "name_checker.R"))
+```
+
+This code gives you a list of parameters that the program would take:
+
+```{r usage}
 args(check_file_names)
 ```
+
+The following are some examples on how we can call this program:
 
 ```{r examples eval=FALSE}
 results <- check_file_names("my_folder")
@@ -109,7 +122,11 @@ There are 4 TIFF files in `files_oliver`, which are named loosely according to
 the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
-results <- check_file_names(file.path("hackathon-arenas-02",'files_oliver'))
+results <- check_file_names(here("hackathon-arenas-02",'files_test'))
+```
+
+```{r oliver_test_no_here eval=FALSE}
+results <- check_file_names(file.path("hackathon-arenas-02",'files_test'))
 ```
 
 If we look at the first file checked: 
@@ -168,6 +185,10 @@ actually finding. The code also has a way to do this by invoking the
 `verbose` option:
 
 ```{r verbose}
+results  <- check_file_names(here("hackathon-arenas-02","files_oliver","Good_file"),verbose=TRUE)
+```
+
+```{r verbose_no_here}
 results  <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"),verbose=TRUE)
 ```
 
@@ -194,11 +215,15 @@ familiar with changes to their workflow, a program like this might
 help ease people into the new naming system.
 
 ```{r carmen_test}
+results <- check_file_names(here("hackathon-arenas-02","files_carmen"))
+```
+
+```{r carmen_test_no_here}
 results <- check_file_names(file.path("hackathon-arenas-02","files_carmen"))
 ```
 
 ### Checking multiple folders
-[//]: # This is totally optional.
+
 This program can be used as part of a larger workflow to check
 multiple folders.
 The following R code lists all the directory in the current folder
@@ -207,7 +232,7 @@ the program on each of those folders.
 Furthermore, it will also save the results into a file called
 `name_checking_log.txt` that you can look at once all the folders have been checked
 
-```{r multiFolder}
+```{r multiFolder eval=FALSE}
 all_dirs  <-  list.dirs(path=file.path("hackathon-arenas-02"))
 for(i in 1:length(all_dirs)){
   logfile  <-  c(paste("Current folder is:",all_dirs[i]),"")
@@ -215,7 +240,6 @@ for(i in 1:length(all_dirs)){
 }
 
 write.table(logfile,file.path("hackathon-arenas-02","name_checking_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
-
 ```
 ---
 
@@ -232,7 +256,8 @@ In the antibody section of the file name, we are currently making all
 the gene symbols as all caps.
 
 For example:
-`NES-SAI2d15-OT_200514-01_Vehicle-1_DAPI+go`**PITX3**`-dk488+rb`**ALDH1**`-dk555+mo`**TH**`-dk647**_200520_CF_10X-z2-3.tif`
+`NES-SAI2d15-OT_200514-01_Vehicle-1_DAPI+go` **PITX3** `-dk488+rb`
+**ALDH1** `-dk555+mo` **TH** `-dk647**_200520_CF_10X-z2-3.tif`
 
 However, what if we prefer to have the gene symbol to be capitalized
 only on the first letter?
@@ -240,9 +265,15 @@ only on the first letter?
 We have another piece of code that would capitalize the first letter
 of any word:
 
-```{r firstCaps_demo}
-source(file.path("hackathon-arenas-02","code","firstCaps.R"))
+```{r source_firstCaps}
+source(here("hackathon-arenas-02","code","firstCaps.R"))
+```
 
+```{r source_firstCaps_no_here eval=FALSE}
+source(file.path("hackathon-arenas-02","code","firstCaps.R"))
+```
+
+```{r firstCaps_demo}
 args(firstCaps)
 
 firstCaps("NURR1")
@@ -306,9 +337,15 @@ else{
 
 Let's see what the code does now:
 
-```{r firstCaps_nameChecker}
-source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+```{r firstCaps_nameChecker_source}
+source(here("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+```
 
+```{r firstCaps_nameChecker_no_here eval=FALSE}
+source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+```
+
+```{r firstCaps_nameChecker_demo}
 results <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"))
 ```
 
