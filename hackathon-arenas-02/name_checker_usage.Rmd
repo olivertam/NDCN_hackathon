@@ -74,19 +74,17 @@ source(here("code", "name_checker.R"))
 ## How to use it
 
 ```{r usage1 eval=FALSE}
-check_file_names("my_folder")
+results <- check_file_names("my_folder")
 
 results  <- check_file_names("my_folder",print2screen=FALSE)
-
-results  <- check_file_names("my_folder")
 ```
 
 The user provides a folder (`my_folder`) containing files with names
 that should be checked. The program that finds all the image files
 (ending in .czi .tif or .tiff) and checks their names. 
 
-The first command prints the results to screen, but does not save that
-information.
+The first command saves the results to a variable(`results`), and also
+prints it to the screen.
 The second command saves the results to a variable (`results`), but
 doesn't print it to screen.
 The third command does both (save the results to `results`, and also
@@ -183,8 +181,8 @@ Here are 3 files in `files_julietest` that are named incorrectly:
 
 Let's see if the program picks that up
 
-```{r}
-check_file_names(here('files_julietest'))
+```{r julie_test}
+results <- check_file_names(here('files_julietest'))
 ```
 
 In all three cases, it seems to notice that there is a wrong number of
