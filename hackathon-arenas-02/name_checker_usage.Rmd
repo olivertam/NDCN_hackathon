@@ -65,7 +65,7 @@ We will work from this `arenas_lab_usage.Rmd` document today (also in
 
 ```{r setup}
 ## checks if the `here` package is installed, if not, installs 
-if(! require(here)){
+if(! requireNamespace("here",quietly=TRUE)){
   install.packages("here")
 }
 

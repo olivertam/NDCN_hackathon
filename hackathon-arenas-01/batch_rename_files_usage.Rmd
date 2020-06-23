@@ -53,7 +53,7 @@ Start off by RESTARTING R. File menu > Session > Restart R.
 
 ## checks if the `here` package is installed and usable
 ## installs `here` package if not installed
-if(! require(here)){
+if(! requireNamespace("here",quietly=TRUE)){
     install.packages("here")
 }
 
