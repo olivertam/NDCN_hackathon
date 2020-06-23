@@ -118,7 +118,7 @@ checked, prints it to screen, and also saves it in a variable
 
 ### Oliver's test files
 
-There are 4 TIFF files in `files_oliver`, which are named loosely according to
+There are 4 TIFF files in `files_test`, which are named loosely according to
 the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
@@ -185,11 +185,11 @@ actually finding. The code also has a way to do this by invoking the
 `verbose` option:
 
 ```{r verbose}
-results  <- check_file_names(here("hackathon-arenas-02","files_oliver","Good_file"),verbose=TRUE)
+results  <- check_file_names(here("hackathon-arenas-02","files_test","Good_file"),verbose=TRUE)
 ```
 
 ```{r verbose_no_here}
-results  <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"),verbose=TRUE)
+results  <- check_file_names(file.path("hackathon-arenas-02","files_test","Good_file"),verbose=TRUE)
 ```
 
 From the results, you can see that it identified the following:
@@ -346,7 +346,7 @@ source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
 ```
 
 ```{r firstCaps_nameChecker_demo}
-results <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"))
+results <- check_file_names(file.path("hackathon-arenas-02","files_test","Good_file"))
 ```
 
 Now you can see that the program is suggesting to rename the gene
