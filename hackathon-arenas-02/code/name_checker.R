@@ -61,7 +61,7 @@ sanitize <- function(file_name, replacement = ""){
 }
 
 ## Main subroutine for checking that file names match the expected nomenclature
-check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){ 
+name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){ 
 
     ## Subroutine to check antibody nomenclature
     validateAntibody <- function(label){
