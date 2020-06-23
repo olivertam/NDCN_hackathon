@@ -96,7 +96,7 @@ There are 3 TIFF files in `files_oliver`, which are named loosely according to
 the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
-check_file_names(here('files_oliver'))
+results <- check_file_names(here('files_oliver'))
 ```
 
 If we look at the first file checked: 
