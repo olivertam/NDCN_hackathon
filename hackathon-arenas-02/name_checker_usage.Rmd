@@ -5,6 +5,9 @@ date: "6/26/2020"
 output: html_document
 ---
 
+TODO's/suggestions
+- rename the main folder to simply "arenas-02" to be shorter; do this once Carmen has saved her filenames in case she does not pull first
+
 ## Introduction
 
 This document is to keep track of our workflow using `name_checker.R`,
@@ -66,19 +69,21 @@ library(here) # load `here` package
 
 ## How to use the `name_checker` function
 
+First we have to tell R we want to access code in the `name_checker.R` file, which we do with the `source()` function. This R script has a function called `name_checker()` that we'll use today.
+
 Run the following code block if you have the `here` package:
 
 ```{r source_with_here}
 source(here("hackathon-arenas-02","code", "name_checker.R"))
 ```
 
-If you have trouble with the `here` package, you can run the following:
+If you have trouble with the `here` package, you can run the following (we'll provide both options throughout this demo):
 
 ```{r source_no_here eval=FALSE}
 source(file.path("hackathon-arenas-02","code", "name_checker.R"))
 ```
 
-This code gives you a list of parameters that the function would take:
+This code gives you a list of parameters that the `name_checker()` function would take:
 
 ```{r usage}
 args(name_checker)
@@ -89,18 +94,17 @@ The following are some examples on how we can call this function:
 ```{r examples eval=FALSE}
 results <- name_checker("my_folder")
 
-results  <- name_checker("my_folder",print2screen=FALSE)
+results <- name_checker("my_folder", print2screen=FALSE)
 
-detailed  <- name_checker("my_folder",verbose=TRUE)
+detailed <- name_checker("my_folder", verbose=TRUE)
 ```
 
-The user provides a folder (`my_folder`) containing files with names
-that should be checked. The function that finds all the image files
-(ending in .czi .tif or .tiff) and checks their names. 
+Above, the user provides a folder (`my_folder`) containing files with names
+that should be checked. The `name_checker()` function finds all the image files (ending in .czi .tif or .tiff) and checks their names. 
 
-The first command saves the results to a variable(`results`), and also
+The first command saves the results to a variable (called `results`), and also
 prints it to the screen. This is what we will be using for most of
-this demo.
+this demo. 
 
 The second command saves the results to a variable (`results`), but
 doesn't print it to screen. This is useful if you don't want to see
@@ -113,8 +117,7 @@ checked, prints it to screen, and also saves it in a variable
 
 ### Oliver's test files
 
-There are 4 TIFF files in `files_test`, which are named loosely according to
-the Arenas lab convention. We should check if they are named correctly.
+There are 4 TIFF files in the `files_test` folder, which are named loosely according to the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
 results <- name_checker(here("hackathon-arenas-02",'files_test'))
@@ -154,9 +157,7 @@ For the third file:
 `NES-SAI2d15-r3-CS_200514-01_GFP-1_200517_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1.czi`
 
 The function outputs the expected destination folder that the file
-should go to. This will be part of the Arenas lab's workflow, where they were hoping to
-automatically move files into subfolders based on the information in the first two
-sections. The function will print out this information so the user can double-check.
+should go to. This will be part of the Arenas lab's workflow, where they were hoping to automatically move files into subfolders based on the information in the first two sections. The function will print out this information so the user can double-check.
 
 While the function did find all the information needed for the file
 name, it also made suggestions to the file name that "better" suits the
