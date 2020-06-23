@@ -103,26 +103,6 @@ If we look at the first file checked:
 `NES-SAI2d15-CS_200514-01_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200520_CF_10Xz1-2.tif`
 
 The program suggests that it's not in the right format:
-```
-The file name does not fit the expected nomenclature.
-Expected sections:
-  Experiment name & initial
-  Experiment date and number
-  Condition & replicate
-  Dye/antibodies/transcript
-  Image capture date
-  Microscope type
-  Lens, zoom & image number
-
-It may be missing sections, as it only found 6
-  NES-SAI2d15-CS
-  200514-01
-  DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
-  200520
-  CF
-  10Xz1-2
-Please double-check.
-```
 
 If we try to match the expected sections with the detected sections,
 you can see that we appear to be missing the third section (Condition
@@ -132,18 +112,11 @@ to go in and add the missing information.
 For the second file: 
 `NES-SAI2d15-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-1.tif`
 
-This is the output:
-```
-Destination folder: NES-SAI2d15-CS/200514-01
-The current name does not fit the nomenclature exactly.
-Current name: NES-SAI2d15-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1
-Updated name: NES-SAI2d15-CS_200514-01_GFP-1_DAPI+rbAADC-dk488+shTH-dk555_200520_CF_10X-z1-1
-```
-
-As part of the Arenas lab's workflow, they were hoping to
+The program outputs the expected destination folder that the file
+should go to: `NES-SAI2d15-CS/200514-01`
+This is part of the Arenas lab's workflow, where they were hoping to
 automatically move files into subfolders based on the information in the first two
-sections. Thus, the code outputs the expected destination folder:
-`NES-SAI2d15-CS/200514-01` for the user to double-check/confirm.
+sections. The program will print out this information so the user can double-check.
 
 While the program did find all the information needed for the file
 name, it also made suggestions to the file name that "better" suits the
@@ -157,14 +130,8 @@ files if necessary.
 For the third file:
 `NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
 
-This is the output:
-```
-Destination folder: NES-SAI2d15-CS/200514-01
-Name is consistent with nomenclature
-```
-
 Again, the program indicates the folder where the file should go, and
-lets the user know that the file seems to be named correctly.
+also lets the user know that the file seems to be named correctly.
 
 ### Julie's test files
 [//]: # I'm thinking of adding your example of the extra field (example 3) to the 
