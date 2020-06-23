@@ -70,8 +70,16 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
             species = tolower(species)
             
             target = substr(antibodies[i],3,nchar(antibodies[i]))
-            ## This converts the expected gene name to all uppercase
-            target = toupper(target)
+            if(grepl("^p[A-Z]",target)){
+                ## Possible phosphorylated protein
+                ## Converts the expected gene name to all uppercase,
+                ##  but keeping the lower case "p" to indicate phosphorylated
+                target = paste0("p",toupper(substr(target,2,nchar(target))))
+            }
+            else{
+                ## This converts the expected gene name to all uppercase
+                target = toupper(target)
+            }
             antibodies[i] = paste0(species,target)
         }
         checkedLabel = paste(antibodies, collapse = "-")
@@ -79,7 +87,8 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
     }
 
     ## Identify files to be checked ----
-    files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$",full.names = TRUE), list.dirs(recursive = FALSE))
+    ## Only look for TIFF files or Zeiss microscope output (*.czi or *.lsm)
+    files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$|\\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
     if(length(files) < 1){
         return()
     }

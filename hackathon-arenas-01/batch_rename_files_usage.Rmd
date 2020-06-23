@@ -60,7 +60,7 @@ if(! require(here)){
 library(here) # load `here` package
 
 ## source the script so you can use it
-source(here("code", "batch_rename_files.r"))
+source(file.path("hackathon-arenas-01","code", "batch_rename_files.r"))
 
 ```
 
@@ -71,7 +71,7 @@ We will need to change the **working directory** to where the image files we wan
 ```{r usage, eval = FALSE}
 
 ## change your working directory to where the files are with `setwd()`
-setwd(here("rename_files_examples", "test_files"))
+#setwd(here("rename_files_examples", "test_files"))
 
 ## rename files 
 batch_rename_files(microscope = "BF",

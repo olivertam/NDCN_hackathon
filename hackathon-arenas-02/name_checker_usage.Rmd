@@ -58,7 +58,7 @@ We will work from this `arenas_lab_usage.Rmd` document today (also in
 
 *TODO: if Shanzheng and Carmen use RStudio, can delete `here` requirement for the hackathon because it will automatically work with relative filepaths from the repo*
 
-```{r setup}
+```{r setup eval=FALSE}
 ## checks if the `here` package is installed, if not, installs 
 if(! require(here)){
   install.packages("here")
@@ -66,17 +66,24 @@ if(! require(here)){
 
 ## load libraries
 library(here) # load `here` package
-
-## source the script so you can use it
-source(here("code", "name_checker.R"))
 ```
 
 ## How to use it
 
-```{r usage1 eval=FALSE}
+```{r usage}
+## Source the script so you can use it
+source(file.path("hackathon-arenas-02","code", "name_checker.R"))
+
+## This gives you a list of parameters that the program would take
+args(check_file_names)
+```
+
+```{r examples eval=FALSE}
 results <- check_file_names("my_folder")
 
 results  <- check_file_names("my_folder",print2screen=FALSE)
+
+detailed  <- check_file_names("my_folder",verbose=TRUE)
 ```
 
 The user provides a folder (`my_folder`) containing files with names
@@ -84,23 +91,29 @@ that should be checked. The program that finds all the image files
 (ending in .czi .tif or .tiff) and checks their names. 
 
 The first command saves the results to a variable(`results`), and also
-prints it to the screen.
+prints it to the screen. This is what we will be using for most of
+this demo.
+
 The second command saves the results to a variable (`results`), but
-doesn't print it to screen.
-The third command does both (save the results to `results`, and also
-prints to screen).
+doesn't print it to screen. This is useful if you don't want to see
+the results on screen (especially if there are 100s of files to
+process).
+
+The third command provides more information for each file that it
+checked, prints it to screen, and also saves it in a variable
+(`detailed`). An example of this will be shown later.
 
 ### Oliver's test files
 
-There are 3 TIFF files in `files_oliver`, which are named loosely according to
+There are 4 TIFF files in `files_oliver`, which are named loosely according to
 the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
-results <- check_file_names(here('files_oliver'))
+results <- check_file_names(file.path("hackathon-arenas-02",'files_oliver'))
 ```
 
 If we look at the first file checked: 
-`NES-SAI2d15-CS_200514-01_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200520_CF_10Xz1-2.tif`
+`NES-SAI2d15-r1-CS_200514-01_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200520_CF_10Xz1-2.tif`
 
 The program suggests that it's not in the right format:
 
@@ -110,11 +123,25 @@ you can see that we appear to be missing the third section (Condition
 to go in and add the missing information.
 
 For the second file: 
-`NES-SAI2d15-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-1.tif`
+`NES-SAI2d15-r2_JSL_200514-01_GFP-1_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-5.lsm`
+
+Again, the program suggests that it's not in the right format:
+
+If we try to match the expected sections with the detected sections,
+you can see that we have an extra section. This time, the researcher's
+initial was separated from the experiment name (used a underscore
+(`_`) instead of a dash (`-`). Right now, the program will not do anything else, 
+as we want the user to go in and try to fix the file name
+first.
+
+Something to think about: Is there a way to have the code fix it? How
+would it know that the extra field is the researcher's initial?
+
+For the third file:
+`NES-SAI2d15-r3-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1.czi`
 
 The program outputs the expected destination folder that the file
-should go to: `NES-SAI2d15-CS/200514-01`
-This is part of the Arenas lab's workflow, where they were hoping to
+should go to. This will be part of the Arenas lab's workflow, where they were hoping to
 automatically move files into subfolders based on the information in the first two
 sections. The program will print out this information so the user can double-check.
 
@@ -124,10 +151,10 @@ nomenclature system. In particular, it is suggesting that the
 antibodies to have a two-letter species code that is lowercase (`Rb`
 to `rb`, and the target protein to be uppercase (`Th` to `TH`).
 We can use this information, in combination with a modified version of
-our renaming tool from the last hackathon, to automatically rename these
+the renaming tool from the last hackathon, to automatically rename these
 files if necessary.
 
-For the third file:
+For the fourth file:
 `NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
 
 Again, the program indicates the folder where the file should go, and
@@ -141,7 +168,7 @@ actually finding. The code also has a way to do this by invoking the
 `verbose` option:
 
 ```{r verbose}
-results  <- check_file_names(here('files_oliver/Good_file'))
+results  <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"),verbose=TRUE)
 ```
 
 From the results, you can see that it identified the following:
@@ -158,36 +185,17 @@ From the results, you can see that it identified the following:
 This information could be used in the future to auto-generate a
 metadata file, or provide a way to "randomize" the file names.
 
-### Julie's test files
-[//]: # I'm thinking of adding your example of the extra field (example 3) to the 
-[//]: # "files_oliver" folder (which could be renamed back to files), but skipping 
-[//]: # the others. 
-[//]: # I have a feeling that things might take longer than expected, and processing
-[//]: # Carmen's files might be closer to the "real world" scenario.
-Here are 3 files in `files_julietest` that are named incorrectly:
-
-1. Julie forgot to add the image capture date 
-2. Julie combined the condition/replicate information with the
-   dye/antibodies/transcript section
-3. Julie forgot and put her initials with an underscore rather than a dash.
-
-Let's see if the program picks that up
-
-```{r julie_test}
-results <- check_file_names(here('files_julietest'))
-```
-
-In all three cases, it seems to notice that there is a wrong number of
-sections, and gives a message that hopefully allows the user to
-identify where the mistake might be introduced.
-
 ### Carmen's test files
 
 We had Carmen from the Arenas lab try to name a few files according to
 their nomenclature (which is new), and see how well the program can
 help her pick up any issues. As it takes time for people to become
-familiar with changes to their workflow, a program like this would
+familiar with changes to their workflow, a program like this might
 help ease people into the new naming system.
+
+```{r carmen_test}
+results <- check_file_names(file.path("hackathon-arenas-02","files_carmen"))
+```
 
 ### Checking multiple folders
 [//]: # This is totally optional.
@@ -200,47 +208,113 @@ Furthermore, it will also save the results into a file called
 `name_checking_log.txt` that you can look at once all the folders have been checked
 
 ```{r multiFolder}
-all_dirs = list.dirs()
+all_dirs  <-  list.dirs(path=file.path("hackathon-arenas-02"))
 for(i in 1:length(all_dirs)){
-  logfile = c(paste("Current folder is:",all_dirs[i]),"")
-  logfile = c(logfile,check_file_names(all_dirs[i]),print2screen=FALSE)
+  logfile  <-  c(paste("Current folder is:",all_dirs[i]),"")
+  logfile  <-  c(logfile,check_file_names(all_dirs[i]),print2screen=FALSE)
 }
 
-write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
+write.table(logfile,file.path("hackathon-arenas-02","name_checking_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
 
 ```
+---
 
 ## Tweaking the program
 
----
-## Our internal testing
-*Plan to delete pre-hackathon*
+Sometimes you find a program that does 99% of what you want from it,
+but there's that 1% that you want to change to make it better fit your
+workflow. Here, we can take a look at how we might try to make a small
+change by adding another piece of code that we found elsewhere.
 
-### Julie test files
-3 files:
+### Using first letter capitalized instead of all caps
 
-1. Julie forgot and put her initials with an underscore rather than dash
-2. Julie deleted the image capture date
-3. Julie deleted half of the dye/antibodies/transcript
+In the antibody section of the file name, we are currently making all
+the gene symbols as all caps.
 
+For example:
+`NES-SAI2d15-OT_200514-01_Vehicle-1_DAPI+go`**PITX3**`-dk488+rb`**ALDH1**`-dk555+mo`**TH**`-dk647**_200520_CF_10X-z2-3.tif`
 
-```{r}
-logfile <- check_file_names(here('hackathon-arenas-02/files_julietest'))
+However, what if we prefer to have the gene symbol to be capitalized
+only on the first letter?
+
+We have another piece of code that would capitalize the first letter
+of any word:
+
+```{r firstCaps_demo}
+source(file.path("hackathon-arenas-02","code","firstCaps.R"))
+
+args(firstCaps)
+
+firstCaps("NURR1")
+firstCaps("ras")
 ```
 
-It behaves as we expect.
+How would we add this into our name checking code?
 
-### Test run
+Let's open the name_check.R code
 
-```{r test-run}
-all_dirs = list.dirs()
-logfile = vector()
-for(i in 1:length(all_dirs)){
-  cat(paste("Current folder is:",all_dirs[i]), "\n\n")
-  logfile = c(paste("Current folder is:",all_dirs[i]),"")
-  logfile = c(logfile,check_file_names(all_dirs[i]))
+It looks like there's a lot of stuff going on there. But if we scroll
+down to line 72 or so, we might be able to find the section that is
+capitalizing all the letters of the antibody target:
+
+```{r uppercase_code eval=FALSE}
+target = substr(antibodies[i],3,nchar(antibodies[i]))
+if(grepl("^p[A-Z]",target)){
+    ## Possible phosphorylated protein
+    ## Converts the expected gene name to all uppercase,
+    ##  but keeping the lower case "p" to indicate phosphorylated
+    target = paste0("p",toupper(substr(target,2,nchar(target))))
 }
-
-write.table(logfile,"name_checking_log.txt",sep="\n",quote=F,row.names=F,col.names=F)
-
+else{
+    ## This converts the expected gene name to all uppercase
+    target = toupper(target)
+}
 ```
+
+If we look carefully, we can see a function called `toupper()`. What
+does that do?
+
+```{r toupper_test}
+args(toupper)
+toupper("NURR1")
+toupper("ras")
+```
+
+So now we find where the code is making things uppercase. How would we
+change it to first caps?
+
+First, we want to copy the code into the `name_check.R` script (which we
+will save as a new copy called `name_checker_firstCaps.R`). I like to
+paste it at the top.
+
+Then we will change the code to use the `firstCaps()` function instead
+of `toupper()`, and then save the file.
+
+```{r firstCaps_change eval=FALSE}
+target = substr(antibodies[i],3,nchar(antibodies[i]))
+if(grepl("^p[A-Z]",target)){
+    ## Possible phosphorylated protein
+    ## Converts the expected gene name to all uppercase,
+    ##  but keeping the lower case "p" to indicate phosphorylated
+    target = paste0("p",firstCaps(substr(target,2,nchar(target))))
+}
+else{
+    ## This converts the expected gene name to all uppercase
+    target = firstCaps(target)
+}
+```
+
+Let's see what the code does now:
+
+```{r firstCaps_nameChecker}
+source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+
+results <- check_file_names(file.path("hackathon-arenas-02","files_oliver","Good_file"))
+```
+
+Now you can see that the program is suggesting to rename the gene
+symbols to only capitalize the first letter.
+
+We hope that this might demonstrate how you can tweak and/or combine
+pieces of code from different sources, and make a new piece of code
+that would do what you want to do.
