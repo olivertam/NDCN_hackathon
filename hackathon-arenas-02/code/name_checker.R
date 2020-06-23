@@ -188,7 +188,7 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
             if(verbose){
                 output = c(output,paste0("Lens: ",toupper(field[1])))
                 output = c(output,paste0("Zoom level: ",tolower(field[2])))
-                output = c(output,paste("Picture #:", field[-1]))
+                output = c(output,paste("Picture #:", field[3]))
             }
             file_info[7] = paste0(toupper(field[1]),"-","z",field[2],"-",field[3])
         }

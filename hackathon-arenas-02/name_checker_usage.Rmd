@@ -133,6 +133,31 @@ For the third file:
 Again, the program indicates the folder where the file should go, and
 also lets the user know that the file seems to be named correctly.
 
+#### What is it actually checking?
+
+If we take a look at the third file, even though the program says that
+it's named correctly, sometimes you might want to check what it's
+actually finding. The code also has a way to do this by invoking the
+`verbose` option:
+
+```{r verbose}
+results  <- check_file_names(here('files_oliver/Good_file'))
+```
+
+From the results, you can see that it identified the following:
+1. Destination folder
+2. Experimental condition
+3. Replicate number
+4. Dye, antibody or transcripts being detected
+5. Date of image capture
+6. Type of microscope used
+7. Lens used
+8. Zoom level
+9. Picture number
+
+This information could be used in the future to auto-generate a
+metadata file, or provide a way to "randomize" the file names.
+
 ### Julie's test files
 [//]: # I'm thinking of adding your example of the extra field (example 3) to the 
 [//]: # "files_oliver" folder (which could be renamed back to files), but skipping 
