@@ -10,25 +10,30 @@ output: html_document
 This document is to keep track of our workflow using `name_checker.R`,
 a script to check that files conform to the Arenas lab convention: 
 
-We expect 7 sections, each separated by an underscore `_`:
+We expect 8 sections, each separated by an underscore `_`:
 
 1. Experimental name and researcher initials
 2. Experiment date and experiment number
 3. Condition and replicate number
-4. Dye, antibodies or transcript
-5. Image capture date
-6. Microscope type
-7. Lens, zoom and image number
+4. Immunohistochemistry date
+5. Dye, antibodies or transcript
+6. Image capture date
+7. Microscope type
+8. Lens, zoom and image number
+
+The first 3 sections would be used (in a future script) to sort the
+file into subfolders
 
 Example:
 
-`NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200519_CF_10Xz1-1.tiff`
+`NES-SAI2d15-CS_200514-01_Vehicle-1_200517_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200519_CF_10Xz1-1.tiff`
 
 Where:
 
 - Experiment name & initial: `NES-SAI2d15-CS`. experiment name is NES-SAI2d15, CS is Carmen Salto
 - Experiment date and number: `200514-01`. 14 May 2020, number 1
 - Condition & replicate: `Vehicle-1`. Vehicle condition, replicate 1
+- Immunohistochemistry date: `200517`: 17 May 2020
 - Dye/antibodies/transcript: `DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647`. Each element separated by `-`, if multiple separated by `+`
 - Image capture date: `200520`: 20 May 2020
 - Microscope type: `CF`. Confocal microscope 
@@ -135,12 +140,13 @@ If we look at the first file checked:
 The program suggests that it's not in the right format:
 
 If we try to match the expected sections with the detected sections,
-you can see that we appear to be missing the third section (Condition
-& replicate). The program will not do anything else, as we want the user
+you can see that we appear to be missing the third (Condition
+& replicate) and fourth section (Immunohistochemistry date). The
+program will not do anything else, as we want the user
 to go in and add the missing information.
 
 For the second file: 
-`NES-SAI2d15-r2_JSL_200514-01_GFP-1_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-5.lsm`
+`NES-SAI2d15-r2_JSL_200514-01_GFP-1_200518_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-5.lsm`
 
 Again, the program suggests that it's not in the right format:
 
@@ -155,7 +161,7 @@ Something to think about: Is there a way to have the code fix it? How
 would it know that the extra field is the researcher's initial?
 
 For the third file:
-`NES-SAI2d15-r3-CS_200514-01_GFP-1_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1.czi`
+`NES-SAI2d15-r3-CS_200514-01_GFP-1_200517_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1.czi`
 
 The program outputs the expected destination folder that the file
 should go to. This will be part of the Arenas lab's workflow, where they were hoping to
@@ -172,7 +178,7 @@ the renaming tool from the last hackathon, to automatically rename these
 files if necessary.
 
 For the fourth file:
-`NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
+`NES-SAI2d15-r4-CS_200514-01_Vehicle-1_200517_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
 
 Again, the program indicates the folder where the file should go, and
 also lets the user know that the file seems to be named correctly.

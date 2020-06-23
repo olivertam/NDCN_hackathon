@@ -8,7 +8,10 @@
 
 ######## Expected Nomenclature ########
 ##
-## Seven (7) sections separated by underscores ("_")
+## Eight (8) sections separated by underscores ("_")
+##
+## The first three sections will indicate the folder that it should be
+## moved to in the future.
 ##
 ## Section 1: Experimental name and researcher initials
 ##       e.g. NES-SAI2d15-CS
@@ -16,23 +19,27 @@
 ##       e.g. 200514-01
 ## Section 3: Condition and replicate number
 ##       e.g. Vehicle-1
-## Section 4: Dye, antibodies or transcript
+##
+## The next five sections will provide information about the image file
+## Section 4: Date when immunohistochemistry was performed (YYMMDD)
+##       e.g. 200517
+## Section 5: Dye, antibodies or transcript
 ##       Different reagents are separated by pluses ("+")
 ##       Primary and secondary antibodies are linked by dashes ("-")
 ##           Two letter code for the animal species generating the antibody
-##           E.g. rbAldh1-dk555
+##           e.g. rbAldh1-dk555
 ##                -> rabbit anti-Aldh1 (primary) with
 ##                   donkey Alexa Fluor 555 (secondary)
 ##       Full example: DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647
-## Section 5: Image capture date
+## Section 6: Date when image was captured (YYMMDD)
 ##       e.g. 200519
-## Section 6: Microscope type
+## Section 7: Microscope type
 ##       e.g. CF
-## Section 7: Lens, zoom and image number
+## Section 8: Lens, zoom and image number
 ##       e.g. 10Xz1-1
 ##
 ## Example file name:
-##       NES-SAI2d15-CS_200514-01_Vehicle-1_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_CF_10Xz1-1.tiff
+##       NES-SAI2d15-CS_200514-01_Vehicle-1_200517_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_CF_10Xz1-1.tiff
 ##
 ########################################
 
@@ -98,7 +105,7 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
     log = c(paste0("Filenames checked on ", 
             format(today,format="%d %B, %Y"), " at ", 
             format(today, format="%I:%M %p"), "."),"")
-
+    
     ## Subroutine to extract the information from file name, and return it ----
     extract_information <- function(name){
         extension <- tools::file_ext(files[i])
@@ -107,13 +114,16 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
         output = c(output,"")
         name = tools::file_path_sans_ext(name)
 
-        ## Based on the nomenclature, there should be 7 fields separated by underscore
-        ## If it doesn't find the 7 fields, then it will return with an error message
+        # Expected date format YYMMDD
+        date.format = "%y%m%d"
+        
+        ## Based on the nomenclature, there should be 8 fields separated by underscore
+        ## If it doesn't find the 8 fields, then it will return with an error message
         file_info = unlist(strsplit(name, "_",fixed=TRUE))
-        if(length(file_info) != 7){
+        if(length(file_info) != 8){
             output = c(output,"The file name does not fit the expected nomenclature.")
-            output = c(output,"Expected sections:","  Experiment name & initial","  Experiment date and number","  Condition & replicate","  Dye/antibodies/transcript","  Image capture date","  Microscope type","  Lens, zoom & image number","")
-            if(length(file_info) < 7){
+            output = c(output,"Expected sections:","  Experiment name & initial","  Experiment date and number","  Condition & replicate","  Date of IHC","  Dye/antibodies/transcript","  Image capture date","  Microscope type","  Lens, zoom & image number","")
+            if(length(file_info) < 8){
                 output = c(output,paste("It may be missing sections, as it only found",length(file_info)))
             }else{
                 output = c(output,paste("It may have too many sections, as it found",length(file_info)))
@@ -124,11 +134,6 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
             return(output)
         }
 
-        ## Getting information about the folder where the file should go to
-        ## This is a "relative" file path
-        ### Improvement: generate an "absolute" file path based on the central storage site/server
-        output = c(output,paste("Destination folder:",file.path(file_info[1],file_info[2])))
-
         ## Getting the condition and replicate information.
         ## Assumption: the replicate number is after the last dash
         field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
@@ -136,8 +141,24 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
             output = c(output,paste("Condition:",paste(head(field,n=-1),sep="-")))
             output = c(output,paste("Replicate:",tail(field,n=1)))
         }
+
+        ## Getting information about the folder where the file should go to
+        ## This is a "relative" file path
+        ### Improvement: generate an "absolute" file path based on the central storage site/server
+        output = c(output,paste("Destination folder:",file.path(file_info[1],file_info[2],file_info[3])))
+
+        ## Getting the date of IHC
+        ## This just checks that the values are compatible with it being a date, but does not ensure cases where months, days (and even last two year digits) are interchangeable.
+        if(is.na(as.Date(file_info[4],date.format))){
+            output = c(output,paste(file_info[4], "is not a date in the expected YYMMDD format"))
+        }else{
+            if(verbose){
+                output = c(output,paste("Capture date:",file_info[4]))
+            }
+        }
+        
         ## Getting the dye, antibody or transcript information.        
-        field = unlist(strsplit(file_info[4], "+", fixed=TRUE))
+        field = unlist(strsplit(file_info[5], "+", fixed=TRUE))
 
         if(verbose){
             output = c(output,"Dye/antibody/transcript:")
@@ -155,34 +176,32 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
                 output = c(output,paste0("    ",field[i]))
             }
         }
-        file_info[4] = paste(field,collapse="+")
+        file_info[5] = paste(field,collapse="+")
 
         ## Getting the date of image capture
-        
-        date.format = "%y%m%d"
         ## This just checks that the values are compatible with it being a date, but does not ensure cases where months, days (and even last two year digits) are interchangeable.
-        if(is.na(as.Date(file_info[5],date.format))){
-            output = c(output,paste(file_info[5], "is not a date in the expected YYMMDD format"))
+        if(is.na(as.Date(file_info[6],date.format))){
+            output = c(output,paste(file_info[6], "is not a date in the expected YYMMDD format"))
         }else{
             if(verbose){
-                output = c(output,paste("Capture date:",file_info[5]))
+                output = c(output,paste("Capture date:",file_info[6]))
             }
         }
 
         ## Getting the microscope type
         ### Improvement: have a list of acceptable terms to check against
         if(verbose){
-            output = c(output,paste("Microscope type:",file_info[6]))
+            output = c(output,paste("Microscope type:",file_info[7]))
         }
 
         ## Getting the lens, zoom and image number
         ## Assumption: it is in the format of 10Xz1-1 or 10X-z1-1
         ## Make final format as 10X-z1-1 (could be changed)
-        field = unlist(strsplit(tolower(file_info[7]),"-",fixed=TRUE))
+        field = unlist(strsplit(tolower(file_info[8]),"-",fixed=TRUE))
         if(length(field) < 3){
             lens = unlist(strsplit(field[1], "x",fixed=TRUE))
             if(length(lens) < 2){
-                output = c(output,paste("Cannot find process lens or zoom information from", file_info[7]))
+                output = c(output,paste("Cannot find process lens or zoom information from", file_info[8]))
             }else{
                 lens[2] = sub("z","",lens[2])
                 if(verbose){
@@ -190,7 +209,7 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
                     output = c(output,paste("Zoom level:",lens[2]))
                     output = c(output,paste("Picture #:", field[-1]))
                 }
-                file_info[7] = paste0(lens[1],"X-z",lens[2],"-",field[-1])
+                file_info[8] = paste0(lens[1],"X-z",lens[2],"-",field[-1])
             }
         }else{
             field[2] = sub("z","",field[2])
@@ -199,7 +218,7 @@ check_file_names <- function(folder,verbose=FALSE,print2screen=TRUE){
                 output = c(output,paste0("Zoom level: ",tolower(field[2])))
                 output = c(output,paste("Picture #:", field[3]))
             }
-            file_info[7] = paste0(toupper(field[1]),"-","z",field[2],"-",field[3])
+            file_info[8] = paste0(toupper(field[1]),"-","z",field[2],"-",field[3])
         }
         if(verbose){
             output = c(output,"")
