@@ -123,7 +123,9 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
         if(length(file_info) != 8){
             output = c(output,"The file name does not fit the expected nomenclature.")
             output = c(output,"Expected sections:","  Experiment name & initial","  Experiment date and number","  Condition & replicate","  Date of IHC","  Dye/antibodies/transcript","  Image capture date","  Microscope type","  Lens, zoom & image number","")
-            if(length(file_info) < 8){
+            if(length(file_info) == 1){
+                output = c(output,"Only 1 section was found.\nWere other symbols (e.g. dashes) used instead of underscores (\"_\")?")
+            }else if(length(file_info) < 8){
                 output = c(output,paste("It may be missing sections, as it only found",length(file_info)))
             }else{
                 output = c(output,paste("It may have too many sections, as it found",length(file_info)))
@@ -136,7 +138,12 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
 
         ## Getting the condition and replicate information.
         ## Assumption: the replicate number is after the last dash
-        field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
+        ##             or after the hashtag symbol
+        if(grepl("#",file_info[3])){
+            field = unlist(strsplit(file_info[3], "#",fixed=TRUE))
+        }else{
+            field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
+        }
         if(verbose){
             output = c(output,paste("Condition:",paste(head(field,n=-1),sep="-")))
             output = c(output,paste("Replicate:",tail(field,n=1)))
