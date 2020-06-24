@@ -5,9 +5,6 @@ date: "6/26/2020"
 output: html_document
 ---
 
-TODO's/suggestions
-- rename the main folder to simply "arenas-02" to be shorter; do this once Carmen has saved her filenames in case she does not pull first
-
 ## Introduction
 
 This document is to keep track of our workflow using `name_checker.R`,
