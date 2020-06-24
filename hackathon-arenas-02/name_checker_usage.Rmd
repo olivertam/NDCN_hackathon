@@ -79,7 +79,7 @@ source(here("hackathon-arenas-02","code", "name_checker.R"))
 
 If you have trouble with the `here` package, you can run the following (we'll provide both options throughout this demo):
 
-```{r source_no_here eval=FALSE}
+```{r source_no_here, eval=FALSE}
 source(file.path("hackathon-arenas-02","code", "name_checker.R"))
 ```
 
@@ -91,7 +91,7 @@ args(name_checker)
 
 The following are some examples on how we can call this function:
 
-```{r examples eval=FALSE}
+```{r examples, eval=FALSE}
 results <- name_checker("my_folder")
 
 results <- name_checker("my_folder", print2screen=FALSE)
@@ -123,7 +123,7 @@ There are 4 TIFF files in the `files_test` folder, which are named loosely accor
 results <- name_checker(here("hackathon-arenas-02",'files_test'))
 ```
 
-```{r oliver_test_no_here eval=FALSE}
+```{r oliver_test_no_here, eval=FALSE}
 results <- name_checker(file.path("hackathon-arenas-02",'files_test'))
 ```
 
@@ -229,7 +229,7 @@ the function on each of those folders.
 Furthermore, it will also save the results into a file called
 `name_checking_log.txt` that you can look at once all the folders have been checked
 
-```{r multiFolder eval=FALSE}
+```{r multiFolder, eval=FALSE}
 all_dirs  <-  list.dirs(path=file.path("hackathon-arenas-02"))
 for(i in 1:length(all_dirs)){
   logfile  <-  c(paste("Current folder is:",all_dirs[i]),"")
@@ -266,7 +266,7 @@ of any word:
 source(here("hackathon-arenas-02","code","firstCaps.R"))
 ```
 
-```{r source_firstCaps_no_here eval=FALSE}
+```{r source_firstCaps_no_here, eval=FALSE}
 source(file.path("hackathon-arenas-02","code","firstCaps.R"))
 ```
 
@@ -285,7 +285,7 @@ It looks like there's a lot of stuff going on there. But if we scroll
 down to line 72 or so, we might be able to find the section that is
 capitalizing all the letters of the antibody target:
 
-```{r uppercase_code eval=FALSE}
+```{r uppercase_code, eval=FALSE}
 target = substr(antibodies[i],3,nchar(antibodies[i]))
 if(grepl("^p[A-Z]",target)){
     ## Possible phosphorylated protein
@@ -318,7 +318,7 @@ paste it at the top.
 Then we will change the code to use the `firstCaps()` function instead
 of `toupper()`, and then save the file.
 
-```{r firstCaps_change eval=FALSE}
+```{r firstCaps_change, eval=FALSE}
 target = substr(antibodies[i],3,nchar(antibodies[i]))
 if(grepl("^p[A-Z]",target)){
     ## Possible phosphorylated protein
@@ -338,7 +338,7 @@ Let's see what the code does now:
 source(here("hackathon-arenas-02","code","name_checker_firstCaps.R"))
 ```
 
-```{r firstCaps_nameChecker_no_here eval=FALSE}
+```{r firstCaps_nameChecker_no_here, eval=FALSE}
 source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
 ```
 
