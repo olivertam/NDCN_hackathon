@@ -112,9 +112,10 @@ The third command provides more information for each file that it
 checked, prints it to screen, and also saves it in a variable
 (`detailed`). An example of this will be shown later.
 
-### Oliver's test files
+### Oliver's demo
 
-There are 4 TIFF files in the `files_test` folder, which are named loosely according to the Arenas lab convention. We should check if they are named correctly.
+There is a file in the `files_test` folder, that is named according to
+the Arenas lab convention. We can run the function to  check if it is named correctly.
 
 ```{r oliver_test}
 results <- name_checker(here("arenas-02",'files_test'))
@@ -124,97 +125,29 @@ results <- name_checker(here("arenas-02",'files_test'))
 results <- name_checker(file.path("arenas-02",'files_test'))
 ```
 
-If we look at the first file checked: 
-`NES-SAI2d15-r1-CS_200514-01_DAPI+goPitx3-dk488+rbAldh1-dk555+moTh-dk647_200520_CF_10Xz1-2.tif`
+The function indicates that the file is named according to the proposed
+nomenclature
 
-The function suggests that it's not in the right format:
+### Carmen's test run
 
-If we try to match the expected sections with the detected sections,
-you can see that we appear to be missing the third (Condition
-& replicate) and fourth section (Immunohistochemistry date). The
-function will not do anything else, as we want the user
-to go in and add the missing information.
-
-For the second file: 
-`NES-SAI2d15-r2_JSL_200514-01_GFP-1_200518_DAPI+RbAADC-dk488+shTH-dk555_200520_CF_10Xz1-5.lsm`
-
-Again, the function suggests that it's not in the right format:
-
-If we try to match the expected sections with the detected sections,
-you can see that we have an extra section. This time, the researcher's
-initial was separated from the experiment name (used a underscore
-(`_`) instead of a dash (`-`). Right now, the function will not do anything else, 
-as we want the user to go in and try to fix the file name
-first.
-
-Something to think about: Is there a way to have the code fix it? How
-would it know that the extra field is the researcher's initial?
-
-For the third file:
-`NES-SAI2d15-r3-CS_200514-01_GFP-1_200517_DAPI+RbAADC-dk488+shTh-dk555_200520_CF_10Xz1-1.czi`
-
-The function outputs the expected destination folder that the file
-should go to. This will be part of the Arenas lab's workflow, where they were hoping to automatically move files into subfolders based on the information in the first two sections. The function will print out this information so the user can double-check.
-
-While the function did find all the information needed for the file
-name, it also made suggestions to the file name that "better" suits the
-nomenclature system. In particular, it is suggesting that the
-antibodies to have a two-letter species code that is lowercase (`Rb`
-to `rb`, and the target protein to be uppercase (`Th` to `TH`).
-We can use this information, in combination with a modified version of
-the renaming tool from the last hackathon, to automatically rename these
-files if necessary.
-
-For the fourth file:
-`NES-SAI2d15-r4-CS_200514-01_Vehicle-1_200517_DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647_200520_CF_10X-z2-3.tif`
-
-Again, the function indicates the folder where the file should go, and
-also lets the user know that the file seems to be named correctly.
-
-#### What is it actually checking?
-
-If we take a look at the third file, even though the function says that
-it's named correctly, sometimes you might want to check what it's
-actually finding. The code also has a way to do this by invoking the
-`verbose` option:
-
-```{r verbose}
-results  <- name_checker(here("arenas-02","files_test","Good_file"),verbose=TRUE)
-```
-
-```{r verbose_no_here}
-results  <- name_checker(file.path("arenas-02","files_test","Good_file"),verbose=TRUE)
-```
-
-From the results, you can see that it identified the following:
-1. Destination folder
-2. Experimental condition
-3. Replicate number
-4. Dye, antibody or transcripts being detected
-5. Date of image capture
-6. Type of microscope used
-7. Lens used
-8. Zoom level
-9. Picture number
-
-This information could be used in the future to auto-generate a
-metadata file, or provide a way to "randomize" the file names.
-
-### Carmen's test files
-
-We had Carmen from the Arenas lab try to name a few files according to
-their nomenclature (which is new), and see how well the function can
-help her pick up any issues. As it takes time for people to become
-familiar with changes to their workflow, a function like this might
-help ease people into the new naming system.
+In another folder, we had Carmen and Shanzheng from the Arenas lab try
+to name a few files according to the proposed nomenclature. We have
+also added some file names that might not perfectly fit. Let's see if
+the function was able to check them.
 
 ```{r carmen_test}
-results <- name_checker(here("arenas-02","files_carmen"))
+source(here("arenas-02","code", "name_checker.R"))
+
+results <- name_checker(here("arenas-02","files_Arenas"))
 ```
 
 ```{r carmen_test_no_here}
-results <- name_checker(file.path("arenas-02","files_carmen"))
+source(file.path("arenas-02","code", "name_checker.R"))
+
+results <- name_checker(file.path("arenas-02","files_Arenas"))
 ```
+
+Let's discuss the results.
 
 ### Checking multiple folders
 
@@ -235,14 +168,42 @@ for(i in 1:length(all_dirs)){
 
 write.table(logfile,file.path("arenas-02","name_checking_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
+
 ---
 
-## Tweaking the function
+## Understanding and tweaking the function
 
-Sometimes you find a function that does 99% of what you want from it,
-but there's that 1% that you want to change to make it better fit your
-workflow. Here, we can take a look at how we might try to make a small
-change by adding another piece of code that we found elsewhere.
+Before we take a look at the code, this is just to remind you of the
+nomenclature:
+
+- 8 sections, each separated by an underscore `_`:
+
+1. Experimental name and researcher initials
+2. Experiment date and experiment number
+3. Condition and replicate number
+4. Immunohistochemistry date
+5. Dye, antibodies or transcript
+6. Image capture date
+7. Microscope type
+8. Lens, zoom and image number
+
+And to remind you how we run this function:
+
+```{r reminder, eval=FALSE}{
+results <- name_checker("my_folder")
+}
+```
+
+Briefly, the function takes in the folder, and searches for all the
+files in that folder. However, it only looks at files that are either
+images (.tif) or those generated by the microscope (.lsm or .czi). The
+code that does is in on ########TO DO######
+
+
+### Adding more file types
+
+
+
 
 ### Using first letter capitalized instead of all caps
 
@@ -349,3 +310,32 @@ symbols to only capitalize the first letter.
 We hope that this might demonstrate how you can tweak and/or combine
 pieces of code from different sources, and make a new piece of code
 that would do what you want to do.
+
+#### Is this just a name checker?
+
+If we take a look at the third file, even though the function says that
+it's named correctly, sometimes you might want to check what it's
+actually finding. The code also has a way to do this by invoking the
+`verbose` option:
+
+```{r verbose}
+results  <- name_checker(here("arenas-02","files_test","Good_file"),verbose=TRUE)
+```
+
+```{r verbose_no_here}
+results  <- name_checker(file.path("arenas-02","files_test","Good_file"),verbose=TRUE)
+```
+
+From the results, you can see that it identified the following:
+1. Destination folder
+2. Experimental condition
+3. Replicate number
+4. Dye, antibody or transcripts being detected
+5. Date of image capture
+6. Type of microscope used
+7. Lens used
+8. Zoom level
+9. Picture number
+
+This information could be used in the future to auto-generate a
+metadata file, or provide a way to "randomize" the file names.

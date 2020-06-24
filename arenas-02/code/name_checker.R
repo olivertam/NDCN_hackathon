@@ -126,50 +126,44 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
         file_info = unlist(strsplit(name, "_",fixed=TRUE))
         if(length(file_info) != 8){
             output = c(output,"The file name does not fit the expected nomenclature.")
-            output = c(output,"Expected sections:","  Experiment name & initial","  Experiment date and number","  Condition & replicate","  Date of IHC","  Dye/antibodies/transcript","  Image capture date","  Microscope type","  Lens, zoom & image number","")
-            if(length(file_info) == 1){
-                output = c(output,"Only 1 section was found.\nWere other symbols (e.g. dashes) used instead of underscores (\"_\")?")
-            }else if(length(file_info) == 5){
-                output = c(output,"Only 5 sections were found.\nAre the first 3 sections (destination directory information) missing?")
-            }else if(length(file_info) < 8){
-                output = c(output,paste("It may be missing sections, as it only found",length(file_info)))
-            }else{
-                output = c(output,paste("It may have too many sections, as it found",length(file_info)))
-            }
-            for(i in 1:length(file_info)){
-                if(length(file_info) == 5){
+            output = c(output,"Expected sections:","  Experiment name & initial","  Experiment date and number","  Condition & replicate","    (Sections required for the destination directory)","  Date of IHC","  Dye/antibodies/transcript","  Image capture date","  Microscope type","  Lens, zoom & image number","    (Sections required for the final file)","")
+            if(length(file_info) <= 5 & length(file_info) > 1){
+                output = c(output,paste("Only",length(file_info),"sections were found.\nIs it missing the destination directory information?"))
+                for(i in 1:length(file_info)){
                     if(i != 1 & i != 3){
                         output = c(output,paste0("  ",file_info[i]))
                     }
                     else{
                         output = c(output,paste0("  ",file_info[i]))
-                        if(numbers_only(file_info[i])){
-                            if(is.na(as.Date(file_info[i],date.format))){
-                                output = c(output,"    A date (YYMMDD) expected for this section")
-                            }
+                        if(is.na(as.Date(file_info[i],date.format))){
+                            output = c(output,"    A date (YYMMDD) expected for this section")
                         }else{
-                            if(! is.na(as.Date(file_info[i],date.format))){
+                            if(! numbers_only(file_info[i])){
                                 output = c(output,"    An underscore might be missing, as other information was found with the date")
-                            }else{
-                                output = c(output,"    A date (YYMMDD) expected for this section")
                             }
                         }
                     }
+                }
+            }
+            else{
+                if(length(file_info) == 1){
+                    output = c(output,"Only 1 section was found.\nWere other symbols (e.g. dashes) used instead of underscores (\"_\")?")                
+                }else if(length(file_info) < 8){
+                    output = c(output,paste("It may be missing sections, as it only found",length(file_info)))
                 }else{
+                    output = c(output,paste("It may have too many sections, as it found",length(file_info)))
+                }
+                for(i in 1:length(file_info)){
                     if(i != 4 & i != 6){
                         output = c(output,paste0("  ",file_info[i]))
                     }
                     else{
                         output = c(output,paste0("  ",file_info[i]))
-                        if(numbers_only(file_info[i])){
-                            if(is.na(as.Date(file_info[i],date.format))){
-                                output = c(output,"    A date (YYMMDD) expected for this section")
-                            }
+                        if(is.na(as.Date(file_info[i],date.format))){
+                            output = c(output,"    A date (YYMMDD) expected for this section")
                         }else{
-                            if(! is.na(as.Date(file_info[i],date.format))){
+                            if(! numbers_only(file_info[i])){
                                 output = c(output,"    An underscore might be missing, as other information was found with the date")
-                            }else{
-                                output = c(output,"    A date (YYMMDD) expected for this section")
                             }
                         }
                     }
@@ -184,13 +178,14 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
         ## Assumption: the replicate number is after the last dash
         ##   Try to replace periods and hashtag with dashes
         ##   as seen in examples from the Arenas lab          
-        if(grepl("#",file_info[3])){
-            file_info[3] = gsub("#","-",file_info[3],fixed=TRUE)
+        condRep = file_info[3]
+        if(grepl("#",condRep)){
+            condRep = gsub("#","-",condRep,fixed=TRUE)
         }
-        if(grepl(".",file_info[3],fixed=TRUE)){
-            file_info[3] = gsub(".","-",file_info[3],fixed=TRUE)
+        if(grepl(".",condRep,fixed=TRUE)){
+            condRep = gsub(".","-",condRep,fixed=TRUE)
         }
-        field = unlist(strsplit(file_info[3], "-",fixed=TRUE))
+        field = unlist(strsplit(condRep, "-",fixed=TRUE))
         if(verbose){
             if(length(field) == 1){
                 output = c(output,paste("Condition:",paste(field,sep="-")))
@@ -199,11 +194,6 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
                 output = c(output,paste("Replicate:",tail(field,n=1)))
             }
         }
-
-        ## Getting information about the folder where the file should go to
-        ## This is a "relative" file path
-        ### Improvement: generate an "absolute" file path based on the central storage site/server
-        output = c(output,paste("Destination folder:",file.path(file_info[1],file_info[2],file_info[3])))
 
         ## Getting the date of IHC
         ## This just checks that the values are compatible with it being a date, but does not ensure cases where months, days (and even last two year digits) are interchangeable.
@@ -269,7 +259,6 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
                     output = c(output,paste("Zoom level:",lens[2]))
                     output = c(output,paste("Picture #:", field[-1]))
                 }
-                file_info[8] = paste0(lens[1],"X-z",lens[2],"-",field[-1])
             }
         }else{
             field[2] = sub("z","",field[2])
@@ -278,9 +267,16 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
                 output = c(output,paste0("Zoom level: ",tolower(field[2])))
                 output = c(output,paste("Picture #:", field[3]))
             }
-            file_info[8] = paste0(toupper(field[1]),"-","z",field[2],"-",field[3])
         }
         if(verbose){
+            output = c(output,"")
+        }
+
+        ## Providing information about the folder where the file should go to
+        ## This is a "relative" file path
+        ### Improvement: generate an "absolute" file path based on the central storage site/server
+        if(verbose){
+            output = c(output,paste("Destination folder:",file.path(file_info[1],file_info[2],file_info[3])))
             output = c(output,"")
         }
 
