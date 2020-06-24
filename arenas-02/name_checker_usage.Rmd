@@ -48,7 +48,7 @@ Download or clone the GitHub folder. Move it somewhere you do your analyses (we 
 
 Open the GitHub folder from RStudio File > Open Project... or in Finder/Windows Explorer by double-clicking the `NDCN_hackathon.Rproj` file.
 
-Navigate to the "hackathon-arenas-02" folder.
+Navigate to the "arenas-02" folder.
 
 We will work from this `name_checker_usage.Rmd` document today. It is
 an R Markdown document, which combines simple text and R code. You can
@@ -74,13 +74,13 @@ First we have to tell R we want to access code in the `name_checker.R` file, whi
 Run the following code block if you have the `here` package:
 
 ```{r source_with_here}
-source(here("hackathon-arenas-02","code", "name_checker.R"))
+source(here("arenas-02","code", "name_checker.R"))
 ```
 
 If you have trouble with the `here` package, you can run the following (we'll provide both options throughout this demo):
 
 ```{r source_no_here, eval=FALSE}
-source(file.path("hackathon-arenas-02","code", "name_checker.R"))
+source(file.path("arenas-02","code", "name_checker.R"))
 ```
 
 This code gives you a list of parameters that the `name_checker()` function would take:
@@ -120,11 +120,11 @@ checked, prints it to screen, and also saves it in a variable
 There are 4 TIFF files in the `files_test` folder, which are named loosely according to the Arenas lab convention. We should check if they are named correctly.
 
 ```{r oliver_test}
-results <- name_checker(here("hackathon-arenas-02",'files_test'))
+results <- name_checker(here("arenas-02",'files_test'))
 ```
 
 ```{r oliver_test_no_here, eval=FALSE}
-results <- name_checker(file.path("hackathon-arenas-02",'files_test'))
+results <- name_checker(file.path("arenas-02",'files_test'))
 ```
 
 If we look at the first file checked: 
@@ -182,11 +182,11 @@ actually finding. The code also has a way to do this by invoking the
 `verbose` option:
 
 ```{r verbose}
-results  <- name_checker(here("hackathon-arenas-02","files_test","Good_file"),verbose=TRUE)
+results  <- name_checker(here("arenas-02","files_test","Good_file"),verbose=TRUE)
 ```
 
 ```{r verbose_no_here}
-results  <- name_checker(file.path("hackathon-arenas-02","files_test","Good_file"),verbose=TRUE)
+results  <- name_checker(file.path("arenas-02","files_test","Good_file"),verbose=TRUE)
 ```
 
 From the results, you can see that it identified the following:
@@ -212,11 +212,11 @@ familiar with changes to their workflow, a function like this might
 help ease people into the new naming system.
 
 ```{r carmen_test}
-results <- name_checker(here("hackathon-arenas-02","files_carmen"))
+results <- name_checker(here("arenas-02","files_carmen"))
 ```
 
 ```{r carmen_test_no_here}
-results <- name_checker(file.path("hackathon-arenas-02","files_carmen"))
+results <- name_checker(file.path("arenas-02","files_carmen"))
 ```
 
 ### Checking multiple folders
@@ -230,13 +230,13 @@ Furthermore, it will also save the results into a file called
 `name_checking_log.txt` that you can look at once all the folders have been checked
 
 ```{r multiFolder, eval=FALSE}
-all_dirs  <-  list.dirs(path=file.path("hackathon-arenas-02"))
+all_dirs  <-  list.dirs(path=file.path("arenas-02"))
 for(i in 1:length(all_dirs)){
   logfile  <-  c(paste("Current folder is:",all_dirs[i]),"")
   logfile  <-  c(logfile,name_checker(all_dirs[i]),print2screen=FALSE)
 }
 
-write.table(logfile,file.path("hackathon-arenas-02","name_checking_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(logfile,file.path("arenas-02","name_checking_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 ---
 
@@ -263,11 +263,11 @@ We have another piece of code that would capitalize the first letter
 of any word:
 
 ```{r source_firstCaps}
-source(here("hackathon-arenas-02","code","firstCaps.R"))
+source(here("arenas-02","code","firstCaps.R"))
 ```
 
 ```{r source_firstCaps_no_here, eval=FALSE}
-source(file.path("hackathon-arenas-02","code","firstCaps.R"))
+source(file.path("arenas-02","code","firstCaps.R"))
 ```
 
 ```{r firstCaps_demo}
@@ -335,15 +335,15 @@ else{
 Let's see what the code does now:
 
 ```{r firstCaps_nameChecker_source}
-source(here("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+source(here("arenas-02","code","name_checker_firstCaps.R"))
 ```
 
 ```{r firstCaps_nameChecker_no_here, eval=FALSE}
-source(file.path("hackathon-arenas-02","code","name_checker_firstCaps.R"))
+source(file.path("arenas-02","code","name_checker_firstCaps.R"))
 ```
 
 ```{r firstCaps_nameChecker_demo}
-results <- name_checker(file.path("hackathon-arenas-02","files_test","Good_file"))
+results <- name_checker(file.path("arenas-02","files_test","Good_file"))
 ```
 
 Now you can see that the function is suggesting to rename the gene

@@ -26,31 +26,31 @@ The idea for this hackathon came from our NDCN Computational Office Hours that w
 - YYYYMMDD picture date, e.g. "20200522"
 - magnification
 
-**Accessing the code & getting oriented**: Everyone downloaded (or cloned) this GitHub repository ("repo"): <https://github.com/olivertam/NDCN_compbio>. Then we opened it in RStudio by double-clicking the .rProj File from Finder/Windows Explorer to open the repo as a RStudio project. We discussed the relevant folders and files insides:
+**Accessing the code & getting oriented**: Everyone downloaded (or cloned) this GitHub repository ("repo"): <https://github.com/olivertam/NDCN_compbio>. Then we opened it in RStudio by double-clicking the .rProj File from Finder/Windows Explorer to open the repo as a RStudio project. We discussed the relevant folders and files within:
 
-- [hackathon-arenas/](https://github.com/olivertam/NDCN_compbio/tree/master/hackathon-arenas) folder has 2 files:
-  - [arenas_lab_usage.Rmd](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd) (“the RMarkdown”)
-  - [batch_rename_files.R](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/batch_rename_files.R) (“the script”)
-- [rename_files_examples](https://github.com/olivertam/NDCN_compbio/tree/master/rename_files_examples)/ folder has example scripts and images
+- [arenas-01/](https://github.com/olivertam/NDCN_compbio/tree/master/arenas-01) folder has 1 file and two folders:
+  - [batch_rename_files_usage.Rmd](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd) (“the RMarkdown”)
+  - [batch_rename_files.R](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/code/batch_rename_files.R) (“the script”, which resides in the [code](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/code) folder)
+- [rename_files_examples](https://github.com/olivertam/NDCN_compbio/tree/master/arenas-01/rename_files_examples)/ folder has example scripts and images
 
 ### Running R code with the Arenas Lab
 
-**Julie screenshared** while in RStudio, we opened both [arenas_lab_usage.Rmd](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd) and [batch_rename_files.R](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/batch_rename_files.R), which were side-by-side in the top-left pane of RStudio. 
+**Julie screenshared** while in RStudio, we opened both [batch_rename_files_usage.Rmd](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd) and [batch_rename_files.R](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/code/batch_rename_files.R), which were side-by-side in the top-left pane of RStudio. 
 
-We used the [RMarkdown file](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd) as the "recipe" or workflow for the hackathon, with the idea that it could be tailored into a workflow later. From the RMarkdown file, we would use the `batch_rename_files` R function we wrote — which is stored in the .R script of the same name — as some of the ingredients in this recipe/workflow. 
+We used the [RMarkdown file](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd) as the "recipe" or workflow for the hackathon, with the idea that it could be tailored into a workflow later. From the RMarkdown file, we would use the `batch_rename_files` R function we wrote — which is stored in the .R script of the same name — as some of the ingredients in this recipe/workflow. 
 
-Throughout this whole process above following notes in the [RMarkdown document itself](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd#L8). 
+Throughout this whole process above following notes in the [RMarkdown document itself](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd#L8). 
 
-Then, we [explored the `batch_rename_files.R` script](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd#L20) and also [used the script](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd#L41) to "source" the `batch_rename_files.R` script and "run" the `batch_rename_files()` function using [test files](https://github.com/olivertam/NDCN_compbio/tree/master/rename_files_examples/test_files). 
+Then, we [explored the `batch_rename_files.R` script](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd#L20) and also [used the script](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd#L41) to "source" the `batch_rename_files.R` script and "run" the `batch_rename_files()` function using [test files](https://github.com/olivertam/NDCN_compbio/tree/master/rename_files_examples/test_files). 
 
 Then, **Carmen screenshared** while repeating the above on her computer. 
 
 ### Reflections & next steps
 
-This was actually as far as we got in our 1.5 hours together, [despite having more planned](https://github.com/olivertam/NDCN_compbio/blob/master/hackathon-arenas/arenas_lab_usage.Rmd#L95). But that's fine! There were a few reasons for this: 
+This was actually as far as we got in our 1.5 hours together, [despite having more planned](https://github.com/olivertam/NDCN_compbio/blob/master/arenas-01/batch_rename_files_usage.Rmd#L95). But that's fine! There were a few reasons for this: 
 
 - Without knowing group size and expertise, I planned more content than I expected to get through
-- There was setup I could have simplified, especially installing the `here` package and making `test_files` a subfolder within the `hackathon-arenas` folder
+- There was setup I could have simplified, especially installing the `here` package and making `test_files` a subfolder within the `arenas-01` folder
 - a few of RMarkdown's new features gave us unanticipated problems, including that 1) you can't "Run" `setwd()` from a code chunk and 2) that you can't "Run" or copy-paste code that requires user-input. 
 
 These RMarkdown features are actually helping you have reproducible practices, since having `setwd()` in your R code is highly indicative of a non-reproducible workflow because it will likely contain a a [`path/that/only/works/on/my/machine`](https://rstats.wtf/project-oriented-workflow.html#setwd). And user input will not be possible from a knitted RMarkdown document, so it is better practice to not have that included either. However, it's nice to be able to have your first R experience in an RMarkdown document, so I will look into the options for these settings. During the hackathon we trouble-shooted by 1) copy-pasting `setwd()` in the console instead of "Running" it and 2) by commenting-out the user-input (which was for confirmation purposes only so not essential to the function's operations), re-sourcing the .R script, and re-running the function call. 
