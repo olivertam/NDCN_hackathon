@@ -34,7 +34,10 @@ Where:
 - Experiment date and number: `200514-01`. 14 May 2020, number 1
 - Condition & replicate: `Vehicle-1`. Vehicle condition, replicate 1
 - Immunohistochemistry date: `200517`: 17 May 2020
-- Dye/antibodies/transcript: `DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647`. Each element separated by `-`, if multiple separated by `+`
+- Dye/antibodies/transcript:
+  `DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647`. Each element
+  separated by `+`, while primary and secondary antibody pairs are
+  separated by `-`.
 - Image capture date: `200520`: 20 May 2020
 - Microscope type: `CF`. Confocal microscope 
 - Lens, zoom & image number: `10X-z2-3`. 10x lens, 2 zoom, number 3.
