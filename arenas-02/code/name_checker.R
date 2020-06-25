@@ -101,11 +101,26 @@ validateAntibody <- function(label){
 ## Main routine `name_checker()` for checking that file names match the expected nomenclature
 name_checker <- function(folder, verbose=FALSE, print2screen=TRUE){ 
 
+    ## Check that the folder exists
+    if(! dir.exists(folder)){
+        log = paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
+        if(print2screen){
+            screenOutput = paste(log,collapse="\n")
+            cat(screenOutput, "\n")
+        }
+        return(log)
+    }
+    
     ## Identify files to be checked ----
     ## Only look for TIFF files or Zeiss microscope output (*.czi or *.lsm)
     files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$|\\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
     if(length(files) < 1){
-        return()
+        log = c(paste("No suitable files identified in",folder),"")
+        if(print2screen){
+            screenOutput = paste(log,collapse="\n")
+            cat(screenOutput, "\n")
+        }
+        return(log)
     }
 
     ## Set up log file ----
