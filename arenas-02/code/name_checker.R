@@ -3,8 +3,10 @@
 ## Name checker. 
 ## Original script by Oliver Tam tam@cshl.edu, June 2020
 
-## This function will check that the files are named according
-## to the convention outlined by the Arenas lab
+## The `name_checker()` function will check that the files are named according
+## to the convention outlined by the Arenas lab. 
+## There are also several accompanying subroutine functions: 
+##`sanitize()`, `numbers_only()`, and validateAntibody()
 
 ######## Expected Nomenclature ########
 ##
@@ -44,7 +46,7 @@
 ########################################
 
 
-## Subroutine to remove characters that cannot be in file names ##
+## Subroutine `sanitize()` to remove characters that cannot be in file names ----
 ## Adapted from `path_sanitize()` from `fs` package https://fs.r-lib.org
 sanitize <- function(file_name, replacement = ""){
     illegal <- "[/\\?<>\\:*|\":]"
@@ -60,57 +62,74 @@ sanitize <- function(file_name, replacement = ""){
     return(file_name)
 }
 
+## Subroutine `numbers_only()` to check for numbers only ----
 numbers_only <- function(string){
     return(! grepl("\\D",string))
 }
 
-## Main subroutine for checking that file names match the expected nomenclature
-name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){ 
-
-    ## Subroutine to check antibody nomenclature
-    validateAntibody <- function(label){
-        antibodies = unlist(strsplit(label,"-",fixed=TRUE))
-        ### Improvement: Might need to check for cases where there are dashes where there shouldn't be
-        for(i in 1:length(antibodies)){
-            ## Assumption: the first two letters are species-related, and make them lowercase for consistency
-            ### Caveat: This is a very bad assumption as there's no way for this code to confirm if it is incorrect.
-            ### The only way to know is when they read through the log files and notice something weird.
-            ### Improvement: Check against a known list of species
-            species = substr(antibodies[i],1,2)
-            ## This converts the 2-letter species code to all lowercase
-            species = tolower(species)
-            
-            target = substr(antibodies[i],3,nchar(antibodies[i]))
-            if(grepl("^p[A-Z]",target)){
-                ## Possible phosphorylated protein
-                ## Converts the expected gene name to all uppercase,
-                ##  but keeping the lower case "p" to indicate phosphorylated
-                target = paste0("p",toupper(substr(target,2,nchar(target))))
-            }
-            else{
-                ## This converts the expected gene name to all uppercase
-                target = toupper(target)
-            }
-            antibodies[i] = paste0(species,target)
+## Subroutine `validateAntibody()` to check antibody nomenclature ----
+validateAntibody <- function(label){
+    antibodies = unlist(strsplit(label,"-",fixed=TRUE))
+    ### Improvement: Might need to check for cases where there are dashes where there shouldn't be
+    for(i in 1:length(antibodies)){
+        ## Assumption: the first two letters are species-related, and make them lowercase for consistency
+        ### Caveat: This is a very bad assumption as there's no way for this code to confirm if it is incorrect.
+        ### The only way to know is when they read through the log files and notice something weird.
+        ### Improvement: Check against a known list of species
+        species = substr(antibodies[i],1,2)
+        ## This converts the 2-letter species code to all lowercase
+        species = tolower(species)
+        
+        target = substr(antibodies[i],3,nchar(antibodies[i]))
+        if(grepl("^p[A-Z]",target)){
+            ## Possible phosphorylated protein
+            ## Converts the expected gene name to all uppercase,
+            ##  but keeping the lower case "p" to indicate phosphorylated
+            target = paste0("p",toupper(substr(target,2,nchar(target))))
         }
-        checkedLabel = paste(antibodies, collapse = "-")
-        return(checkedLabel)
+        else{
+            ## This converts the expected gene name to all uppercase
+            target = toupper(target)
+        }
+        antibodies[i] = paste0(species,target)
     }
+    checkedLabel = paste(antibodies, collapse = "-")
+    return(checkedLabel)
+}
 
+
+## Main routine `name_checker()` for checking that file names match the expected nomenclature
+name_checker <- function(folder, verbose=FALSE, print2screen=TRUE){ 
+
+    ## Check that the folder exists
+    if(! dir.exists(folder)){
+        log = paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
+        if(print2screen){
+            screenOutput = paste(log,collapse="\n")
+            cat(screenOutput, "\n")
+        }
+        return(log)
+    }
+    
     ## Identify files to be checked ----
     ## Only look for TIFF files or Zeiss microscope output (*.czi or *.lsm)
     files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$|\\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
     if(length(files) < 1){
-        return()
+        log = c(paste("No suitable files identified in",folder),"")
+        if(print2screen){
+            screenOutput = paste(log,collapse="\n")
+            cat(screenOutput, "\n")
+        }
+        return(log)
     }
 
-    ## Setting up log file ----
+    ## Set up log file ----
     today <- Sys.time()
     log = c(paste0("Filenames checked on ", 
             format(today,format="%d %B, %Y"), " at ", 
             format(today, format="%I:%M %p"), "."),"")
     
-    ## Subroutine to extract the information from file name, and return it ----
+    ## Subroutine `extract_information()` to extract the information from file name, and return it ----
     extract_information <- function(name){
         extension <- tools::file_ext(files[i])
         output = "####"
@@ -176,8 +195,8 @@ name_checker <- function(folder,verbose=FALSE,print2screen=TRUE){
 
         ## Getting the condition and replicate information.
         ## Assumption: the replicate number is after the last dash
-        ##   Try to replace periods and hashtag with dashes
-        ##   as seen in examples from the Arenas lab          
+          ## Try to replace periods and hashtag with dashes
+          ## as seen in examples from the Arenas lab          
         condRep = file_info[3]
         if(grepl("#",condRep)){
             condRep = gsub("#","-",condRep,fixed=TRUE)

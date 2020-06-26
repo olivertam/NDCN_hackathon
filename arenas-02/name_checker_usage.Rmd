@@ -44,7 +44,7 @@ Where:
 
 ## Code setup
 
-Download or clone the GitHub folder. Move it somewhere you do your analyses (we can discuss good options later).
+Download or clone the GitHub folder: <https://github.com/olivertam/NDCN_hackathon>. Move it somewhere you do your analyses (we can discuss strategic options later).
 
 Open the GitHub folder from RStudio File > Open Project... or in Finder/Windows Explorer by double-clicking the `NDCN_hackathon.Rproj` file.
 
@@ -55,7 +55,7 @@ an R Markdown document, which combines simple text and R code. You can
 use the Table of Contents at the bottom of the file to navigate. And
 please add your own notes!
 
-We will load one library, `here`, which reduces potential filepath issues.
+We will load one library, `here`, which reduces potential filepath issues. But if you have trouble with the `here` package, don't worry, we'll provide an option without it throughout this demo.
 
 ```{r setup}
 ## checks if the `here` package is installed, if not, installs 
@@ -74,13 +74,13 @@ First we have to tell R we want to access code in the `name_checker.R` file, whi
 Run the following code block if you have the `here` package:
 
 ```{r source_with_here}
-source(here("arenas-02","code", "name_checker.R"))
+source(here("arenas-02", "code", "name_checker.R"))
 ```
 
-If you have trouble with the `here` package, you can run the following (we'll provide both options throughout this demo):
+Here is the non-`here` code option:
 
 ```{r source_no_here, eval=FALSE}
-source(file.path("arenas-02","code", "name_checker.R"))
+source(file.path("arenas-02", "code", "name_checker.R"))
 ```
 
 This code gives you a list of parameters that the `name_checker()` function would take:
@@ -95,14 +95,12 @@ The following are some examples on how we can call this function:
 results <- name_checker("my_folder")
 
 results <- name_checker("my_folder", print2screen=FALSE)
-
 ```
 
 Above, the user provides a folder (`my_folder`) containing files with names
 that should be checked. The `name_checker()` function finds all the image files (ending in .czi .tif or .tiff) and checks their names. 
 
-The first command saves the results to a variable (called `results`), and also
-prints it to the screen. This is what we will be using for most of
+The first command saves the results to a variable (called `results`), and also prints it to the screen. This is what we will be using for most of
 this demo. 
 
 The second command saves the results to a variable (`results`), but
@@ -110,14 +108,10 @@ doesn't print it to screen. This is useful if you don't want to see
 the results on screen (especially if there are 100s of files to
 process).
 
-The third command provides more information for each file that it
-checked, prints it to screen, and also saves it in a variable
-(`detailed`). An example of this will be shown later.
-
 ## Oliver's demo
 
 There is a file in the `files_test` folder that is named according to
-the Arenas lab convention. We can run the function to  check if it is named correctly.
+the Arenas lab convention. We can run the function to check if it is named correctly.
 
 ```{r oliver_test}
 results <- name_checker(here("arenas-02",'files_test'))
@@ -128,7 +122,7 @@ results <- name_checker(file.path("arenas-02",'files_test'))
 ```
 
 The function indicates that the file is named according to the proposed
-nomenclature
+nomenclature.
 
 ## Carmen's test run
 
@@ -157,19 +151,16 @@ Does anyone have any questions? Have you been following along with the code?
 
 ## Features discussion
 
-We've created this code after the Arenas lab talked together about
-what their current, personal naming conventions are, and what nice lab
-conventions could be. But this is a very iterative process to align
-and decide on the conventions and write the code that works just like you want.
+We've created this code through discussions with the Arenas lab. Their lab discussed about what their current personal naming conventions are, and what nice lab conventions could be. Deciding on team norms and writing code to address them a very iterative process, and will continue after the hackathon.
 
-These are some updates/iterations that we can discuss, and can also look at the code of what we would do to change it: 
+These are some updates/iterations that we can discuss. We can also look at the code of what we would do to change it: 
 
 - **File types**. The function is designed to only look at certain file types. Can we add to it?
 - **Underscores**. The 8 sections are separated by underscores. Do we still like this? What if we wanted to change it to dashes? 
 - **FirstCaps**. Currently gene names are in ALLCAPS. But what if we wanted them in FirstCaps? 
 - **Dyes and antibodies**. Combining dyes and antibodies gets quite long and complicated. What are other options?
 - **Verbose mode**. We can also use the `verbose` argument to give more information to the user.
-- **Checking multiple folders**. The function currently operates on just one folder you provide. But you can add multiple!
+- **Checking multiple folders**. The function currently operates on just one folder you provide. But we could have the code look through multiple folders.
 
 ## Understanding and tweaking the function
 
@@ -198,8 +189,7 @@ files within. It then takes each of the file names, and checks that it
 matches the nomenclature based on the rules above. If it is incorrect,
 it will try to highlight (and sometimes suggest) sources of error.
 
-While it might seem that the function is designed specifically for the Arenas lab, there
-are a few features that could be re-used for other code.
+While it might seem that the function is designed specifically for the Arenas lab, there are a few features that could be re-used for other code.
 
 ### File types
 
@@ -207,7 +197,7 @@ One feature of this function is to only look at files that are either
 images (.tif) or those generated by the microscope (.lsm or
 .czi). This is because we don't want to be checking files where
 we are not expecting them to use this naming system.
-The code that selects those particular file types is on [line 102 of the `name_checker.R` script](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L102)
+The code that selects those particular file types is on [line 116 of the `name_checker.R` script](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L116)
 
 ```{r find_files, eval=FALSE}
 files <- setdiff(list.files(folder, pattern="\\.czi$ | \\.tif$ | \\.tiff$ | \\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
@@ -224,33 +214,30 @@ Let's take one example:
 This is a [regular
 expression](https://en.wikipedia.org/wiki/Regular_expression), which
 is a way to search for a pattern in text. Even if you don't know
-anything about regular expression, you might be guess what pattern
+anything about regular expressions, you might be guess what pattern
 it's looking for based on what we expect the code to do.
 
-What it is looking for in the example above are items (in this case, files) that end in
-".czi". 
-- The "." is represented as `\\.` (it's because both back-slashes
-  (`\`) and dots (`.`) have special meaning in regular expression, so you have to use
-  a weird combination of them to make the computer understand exactly
-  what you want)
+What it is looking for in the example above are items (in this case, files) that end in ".czi". 
+
+- The "." is represented as `\\.` (it's because both back-slashes (`\`) and dots (`.`) have special meaning in regular expression, so you have to use a weird combination of them to make the computer understand exactly what you want)
 - The "czi" file extension is represented as `czi`
 - The `$` indicates the end of the value, so nothing should come
   after it
 
 #### Questions
 
-How many different file extensions is it looking for (hint: the `|`
-functions like "or") ?
+How many different file extensions is it looking for? (hint: the `|`
+operator means "or")
 
 If you wanted to add more file extensions/type (let's say ".txt"), how
 would you change the code?
 
 ### Underscores
 
-Once it grabs the file name, it tries to split the name into chunks by
+Once the function has the file name, it tries to split the name into chunks by
 treating the underscore as a separator. So if you have `a_b_c`, the
 code on [line
-126](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L126)
+145](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L145)
 will break it up into `a`, `b`, and `c`
 
 ```{r breaking_into_chunks, eval=FALSE}
@@ -372,6 +359,7 @@ Here's one example:
 
 This indicates that the image is stained with DAPI, and treated with
 the following combinations of primary & secondary antbodies:
+
 - goat anti-PITX3 with donkey fluorophore-488
 - rabbit anti-ALDH1 with donkey fluorphore-555
 - mouse anti-TH with donkey fluorphore-647
@@ -388,32 +376,40 @@ name, and thus it's probably something that the function should check
 a little more carefully.
 
 Currently, the code handles this by splitting the long name into
-smaller chunks (using the `+` as the separator) (see [line 209](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L209)
+smaller chunks (using the `+` as the separator) (see [line 228](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L228)
+*Note*: This is very similar to the code that splits the line by underscores:
+
+```{r parse_antibody, eval=FALSE}
+field = unlist(strsplit(file_info[5], "+", fixed=TRUE))
+```
 
 So `DAPI+goPITX3-dk488+rbALDH1-dk555+moTH-dk647`
 becomes
 `DAPI`, `goPITX3-dk488`, `rbALDH1-dk555` ,`moTH-dk647`
 
 It then tries to find a dash (`-`) in each chunk, and if a dash is
-found, it's treated as an antibody label.
+found, it's treated as an antibody label. (see [line 239-241](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/code/name_checker.R#L239-L241)
+
+```{r find_dash, eval=FALSE}
+if(grepl("-",field[i])){
+    field[i] = validateAntibody(field[i])
+}
+```
 
 Once it decides it's an antibody, it then splits the primary from the
-secondary:
-`goPITX3-dk488` becomes `goPITX3` and `dk488`.
-THe function then extracts the first two letter to get the host species ID (e.g. `go`),
-and treats the rest as the target (gene symbol or fluorphore). As we
-discussed above, it capitalizes the gene symbol if required.
+secondary: `goPITX3-dk488` becomes `goPITX3` and `dk488`.
+The function then extracts the first two letter to get the host species ID (e.g. `go`),and treats the rest as the target (gene symbol or fluorphore). As we discussed above, it capitalizes the gene symbol if required.
 
 Unfortunately, the function currently can't confirm that the
 information is correct, but merely tries to extract it. Considering
-how many pieces of information is contained here, it might be worth trying to check it more closely
+how many pieces of information is contained here, it might be worth trying to check it more closely.
 
 #### Questions
 
 - The function assumes that having a `-` means an antibody pair. What happens
-  if this is an in-situ hybridization with a gene that has a  dash in its name? 
-     - Should we use another symbol (like `=` or `#`)?
-	 - The file names would start looking quite ridiculous
+  if this is an in-situ hybridization with a gene that has a dash in its name? 
+    - Should we use another symbol (like `=` or `#`)?
+    - The file names would start looking quite ridiculous
 - What happens if you forget to add the host species to the antibody?
      - The gene symbol or flurophore might now be misread
 - Are there other ways to store this information?
@@ -421,15 +417,14 @@ how many pieces of information is contained here, it might be worth trying to ch
 ### Verbose mode
 
 Even though the function says that it's named correctly, sometimes you
-might want to check what it's actually finding. The code also has a way to do this by invoking the
-`verbose` option:
+might want to check what it's actually finding. The code also has a way to do this by invoking the `verbose` option:
 
 ```{r verbose}
-results  <- name_checker(here("arenas-02","files_test","Good_file"),verbose=TRUE)
+results  <- name_checker(here("arenas-02","files_test"),verbose=TRUE)
 ```
 
 ```{r verbose_no_here}
-results  <- name_checker(file.path("arenas-02","files_test","Good_file"),verbose=TRUE)
+results  <- name_checker(file.path("arenas-02","files_test"),verbose=TRUE)
 ```
 
 From the results, you can see that it identified the following:
