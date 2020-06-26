@@ -145,7 +145,7 @@ name_checker <- function(folder, verbose=FALSE, print2screen=TRUE){
         file_info = unlist(strsplit(name, "_",fixed=TRUE))
         if(length(file_info) != 8){
             output = c(output,"The file name does not fit the expected nomenclature.")
-            output = c(output,"Expected sections:","  [01]Experiment name & initial","  [02]Experiment date and number","  [03]Condition & replicate","    (Sections required for the destination directory)","  [04]Date of IHC","  [05]Dye/antibodies/transcript","  [06]Image capture date","  [07]Microscope type","  [08]Lens, zoom & image number","    (Sections required for the final file)","")
+            output = c(output,"Expected sections:","  [01] Experiment name & initial","  [02] Experiment date and number","  [03] Condition & replicate","    (Sections required for the destination directory)","  [04] Date of IHC","  [05] Dye/antibodies/transcript","  [06] Image capture date","  [07] Microscope type","  [08] Lens, zoom & image number","    (Sections required for the final file)","")
             if(length(file_info) <= 5 & length(file_info) > 1){
                 output = c(output,paste("Only",length(file_info),"sections were found.\nIs it missing the destination directory information?"))
                 for(i in 1:length(file_info)){
