@@ -201,9 +201,6 @@ name_checker <- function(folder, verbose=FALSE, print2screen=TRUE){
         if(grepl("#",condRep)){
             condRep = gsub("#","-",condRep,fixed=TRUE)
         }
-        if(grepl(".",condRep,fixed=TRUE)){
-            condRep = gsub(".","-",condRep,fixed=TRUE)
-        }
         field = unlist(strsplit(condRep, "-",fixed=TRUE))
         if(verbose){
             if(length(field) == 1){
