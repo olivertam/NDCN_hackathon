@@ -36,7 +36,7 @@ The specific goal of this hackathon (in addition to the goals listed above) is t
 2. Use an algorithm (e.g. an R function) to check that files are named according to the standardized convenion 
 3. Re-organizing/Sorting files to their appropriate folder/subfolder using the information extracted from the file name.
 
-After the Arenas lab developed a draft naming convention (you can find more details [here](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/README.md#Setup), an R function was developed to determine if the file names match the proposed nomenclature. 
+After the Arenas lab developed a draft naming convention (you can find more details [here](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/README.md#Setup)), an R function was developed to determine if the file names match the proposed nomenclature.
 
 **Understanding the R function with the Arenas lab**: We [led the hackathon](https://www.openscapes.org/blog/2020/03/11/how-to-run-a-remote-workshop/) using a combination of Zoom (including screensharing and breakout rooms for troubleshooting), Google Docs for shared notes, and RStudio and RMarkdown for live-coding in R. We had 7 participants join us who came to learn about how to code in R and how to automate the image process and create pipelines. Many people had experience running other people’s code and were interested in discussions and demos of how to tweak existing code for their own needs. 
 
