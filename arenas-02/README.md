@@ -4,7 +4,7 @@ Chan Zuckerberg Initiative's Neurodegeneration Challenge Network (CZI NDCN) Comp
 ## Hackathon Summary, June 26, 2020
 *We’re using the word “hackathon” here to mean working together on something computational that perhaps isn’t any single person’s responsibility, but benefits everyone in the lab.*
 
-Last week was our second [CZI NDCN](https://chanzuckerberg.com/science/programs-resources/neurodegeneration-challenge/) mini hackathon where we worked with the [Arenas Lab](http://ernestarenaslab.org/) to systemize how they collect and organize data so that it is more streamlined for their own work and for sharing with the broader community. The hackathon was led by Oliver Tam (@olivertam) and Julie Lowndes (@jules32). The goals were to:
+Last week was our second [CZI NDCN](https://chanzuckerberg.com/science/programs-resources/neurodegeneration-challenge/) mini hackathon where we worked with the [Arenas Lab](http://ernestarenaslab.org/) to systematize how they collect and organize data so that it is more streamlined for their own work and for sharing with the broader community. The hackathon was led by Oliver Tam (@olivertam) and Julie Lowndes (@jules32). The goals were to:
 
 1. Work hands-on with the Arenas Lab to check image file naming using R, RStudio, & RMarkdown
 2. Discuss and test ideas for how to build from this experience towards streamlining their lab workflow
@@ -13,7 +13,7 @@ Last week was our second [CZI NDCN](https://chanzuckerberg.com/science/programs-
 We [led the hackathon](https://www.openscapes.org/blog/2020/03/11/how-to-run-a-remote-workshop/) using a combination of Zoom (including screensharing and breakout rooms for troubleshooting), Google Docs for shared notes, and RStudio and RMarkdown for live-coding in R. We had 7 participants join us who came to learn about how to code in R and how to automate the image process and create pipelines. Many people had experience running other people’s code and were interested in discussions and demos of how to tweak existing code for their own needs. 
 
 This hackathon came from our NDCN Computational Office Hours that we hold each week, and builds on ideas and momentum from the [first hackathon](https://github.com/olivertam/NDCN_hackathon/tree/master/arenas-01#ndcn_hackathon) we led in May. 
-We designed these hackathons with Carmen Salto from the Arenas Lab and Oliver Tam from the Hammell Lab, building from our first initial discussions and then iterating with more folks from the Arenas Lab. Thank you to Oliver for writing the code and leading this hackathon, and to Carmen, Ernest, and Shanzheng for all of your input for the weeks leading up to the hackathon. 
+We designed these hackathons with Carmen Salto from the Arenas Lab and Oliver Tam from the Hammell Lab, building from our first initial discussions and then iterating with more folks from the Arenas Lab. Thank you to Oliver Tam for writing the code and leading this hackathon, and to Carmen Salto, Ernest Arenas, and Shanzheng Yang for all of your input for the weeks leading up to the hackathon. 
 
 ### Setup
 **Background description of the problem**: The Arenas Lab leads research on Parkinson’s Disease, and their workflows includes microscopy and imaging that focuses on cell culture, differentiating cells, and immunostainings. Multiple people in the Arenas lab, including Carmen and Shanzheng, work at the microscope, taking lots of pictures. They would like to: 
@@ -26,7 +26,7 @@ This hackathon focused on the second step: using R code to check that files are 
 
 In our first hackathon with the Arenas lab last month, we created a script to rename files without retaining any of the current name. These two scripts could ultimately be used together to rename and check, rename and check. 
 
-**Accessing the code & getting oriented**: Everyone downloaded (or cloned) the hackathon GitHub repository: <https://github.com/olivertam/NDCN_compbio>. Then we opened it in RStudio by double-clicking the `.NDCN_hackathon.Rproj` file from Finder/Windows Explorer to open the repo as a RStudio project. Then we navigated to the "arenas-02" folder and opened `[name_checker_usage.Rmd](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/name_checker_usage.Rmd)`, which contained our workflow for the day. 
+**Accessing the code & getting oriented**: Everyone downloaded (or cloned) the hackathon GitHub repository: <https://github.com/olivertam/NDCN_compbio>. Then we opened it in RStudio by double-clicking the `.NDCN_hackathon.Rproj` file from Finder/Windows Explorer to open the repo as a RStudio project. Then we navigated to the "arenas-02" folder and opened [`name_checker_usage.Rmd`](https://github.com/olivertam/NDCN_hackathon/blob/master/arenas-02/name_checker_usage.Rmd), which contained our workflow for the day. 
 
 **Hackathon 2 plan**: We started off demonstrating what the user’s experience would be using this code (i.e. calling the function `name_checker` from the `name_checker_usage.Rmd` R Markdown file). Afterward we looked more at the code to see how it is working (i.e. looking at the `name_checker` code itself) and what else we might want to add (see "Features Discussion" below).
 
@@ -69,11 +69,11 @@ Where:
 
 ### Features discussion
 
-Oliver created the `name_checker()` function through discussions with the Arenas lab. Their lab discussed what their current personal naming conventions are when they name files at the microscope, and what nice lab conventions could be. Deciding on team norms and writing code to address them is a very iterative process. Today’s hackathon was a good demonstration of this, because there are always additional features that could be added to the code, based on the needs of the group. We talked about balancing the needs and behavior of the user with the features in the code. 
+Oliver created the `name_checker()` function through discussions with the Arenas lab. Their lab discussed what their current personal naming conventions are when they name files at the microscope, and what nice lab conventions could be. Deciding on team norms and writing code to address them is a very iterative process. The hackathon was a good demonstration of this, because there are always additional features that could be added to the code, based on the needs of the group. We talked about balancing the needs and behavior of the user with the complexity of features in the code. 
 
-Oliver described this balance as “how much detail do you need vs how much flexibility do you need.” For example, a question was asked about whether the code could highlight the part of the name that is not as expected. Oliver said yes, but that would require you knowing what is expected, and first writing that into the code.
+Oliver described this balance as “how much detail do you need, versus how much flexibility do you need?” For example, a question was asked about whether the code could highlight the part of the name that is not written as the convention expects. Oliver said yes, but that would require *you* knowing what is expected, and then writing code to ensure that it checks against that expectation.
 
-Oliver also screenshared to demonstrate where we would tweak the code to incorporate these updates. The majority of the checks in `name_checker` are: if you remove the underscore, are there 8 sections? Then it gets a bit more stringent: for example, if it’s supposed to be a date, check if it’s numbers. But if you would like it to check that the antibodies and dyes are correct, you would have to first tell the code what is “correct”.
+Oliver also screenshared to demonstrate where we would tweak the code to incorporate these updates. The majority of what `name_checker` checks is if you remove the underscore, are there 8 sections? Then it gets a bit more stringent. For example, if it’s supposed to be a date, check if it’s numbers. This also illustrated how it can quickly get more complex: if you would like it to check that the antibodies and dyes are correct, you would have to first tell the code what is “correct” so that it could check against it.
 
 These are some updates/iterations that we discussed. 
 
@@ -87,9 +87,9 @@ These are some updates/iterations that we discussed.
 
 ### Reflections & next steps
 
-Ernest Arenas, the PI of the Arenas Lab, said that this hackathon had empowered them to work with code to systematize and automate their workflows. He said that they feel more comfortable knowing a bit more about how the function Oliver had written works, and how it draws on other functions and logic that they were able to follow. 
+Ernest Arenas, the PI of the Arenas Lab, said that this hackathon had empowered them to work with code to systematize and automate their workflows. He said that they feel more comfortable knowing a bit more about how the function Oliver had written works, and how it draws on other functions and logic that they were able to follow. That is so great! Our goal for the hackathon was to create the opportunity to empower their group in this way. 
 
-As the Arenas Lab plays with the code more in real situations, they’ll discuss more about how they would like to modify it. We'll be discussing this more in Office Hours next week, and will likely have a follow-up hackathon to put some of this into practice. Thanks everyone for joining and for reading!
+As the Arenas Lab plays with the code more with real files, they’ll discuss more about how they would like to modify it. We'll be discussing this more in Office Hours next week, and will likely have a follow-up hackathon to put some of this into practice. Thanks everyone for joining and for reading!
 
 <br>
 <br>
