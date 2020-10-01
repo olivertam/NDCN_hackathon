@@ -1,4 +1,4 @@
-Package: arenasImageSorter
+Package: arenasImageOrganizer
 Title: Sorts Images Collected by the Arenas Lab to Folders
 Version: 0.0.0.9000
 Authors@R: 
@@ -13,6 +13,7 @@ Authors@R:
            email = "juliaslowndes@gmail.com",
            )
 Description: This package takes files collected by the Arenas lab, checks that their name matches the nomenclature, and moves them to the corresponding folders designated in their name.
+Depends: R (>= 3.5.0)
 License: `use_gpl3_license()`
 Encoding: UTF-8
 LazyData: true

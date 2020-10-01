@@ -12,7 +12,7 @@
 #' @return A dictionary linking the anonymized file to the previous name
 #' @export
 
-file_anonymizer <- function(folder){
+file_anonymizer <- function(folder,deleteOrig=TRUE){
     ## Check that the folder exists
     if(! dir.exists(folder)){
         log <- paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
@@ -49,7 +49,9 @@ file_anonymizer <- function(folder){
         newfile <- paste0("anonymizedFile_",anonDate,"_",filenum,".", extension)
         output <- paste0(folder,"/", newfile)
         file.copy(files[i], output)
-        file.remove(files[i])
+        if(deleteOrig){
+            file.remove(files[i])
+        }
         dict = rbind(dict,c(newfile,oldfile))
     }
       
@@ -61,7 +63,7 @@ file_anonymizer <- function(folder){
     }else{
         log  <- c(log,paste(dict,collapse = " is originally "))
     }
-    write(log, file=paste0(folder,"/","file_key.log"), sep="\n")
+    write(log, file=paste0(folder,"/","file_key_",anonDate,".log"), sep="\n")
     return(log)
 }
 

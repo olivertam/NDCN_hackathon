@@ -1,0 +1,318 @@
+---
+title: "Arenas image sorting pipeline"
+author: "Oliver Tam and Julie Lowndes"
+date: "10/1/2020"
+output: html_document
+---
+
+## Introduction
+
+This document is to provide a potential workflow for checking,
+renaming and potentially anonymizing image files that are labelled
+according to the Arenas lab convention.
+
+For each file name, we expect 8 sections, each separated by an underscore `_`:
+
+1. Experimental name and researcher initials
+2. Experiment date and experiment number
+3. Condition and replicate number
+4. Immunohistochemistry date
+5. Dye, antibodies or transcript
+6. Image capture date
+7. Microscope type
+8. Lens, zoom and image number
+
+Example:
+
+`HESH9-CS_201001_d11-CT0.3_181002_DAPI+rbLMX1AKN-dk555_181109_CF_10Xz2-1.tif`
+
+Where:
+
+- Experiment name & initial: `HESH9-CS`. 
+- Experiment date (and number if provided): `181002`
+- Condition (and replicate if provided): `d11-CT0.3`.
+- Immunohistochemistry date: `201002`
+- Dye/antibodies/transcript: `DAPI+rbLMX1AKN-dk555`.
+- Image capture date: `181109`
+- Microscope type: `CF`
+- Lens, zoom & image number: `10X-z2-3`
+
+## Setup
+
+Download or clone the GitHub folder: <https://github.com/olivertam/NDCN_hackathon>. Move it somewhere you do your analyses (we can discuss strategic options later).
+
+Open the GitHub folder from RStudio File > Open Project... or in Finder/Windows Explorer by double-clicking the `NDCN_hackathon.Rproj` file.
+
+Navigate to the "arenas-03" folder.
+
+We will work from this `arenasImageOrganizer.Rmd` document today. It is
+an R Markdown document, which combines simple text and R code. You can
+use the Table of Contents at the bottom of the file to navigate. And
+please add your own notes!
+
+We will load one library, `here`, which reduces potential filepath
+issues. If you have trouble with the `here` package, an option will be
+provided to run the code without it.
+
+```{r setup}
+## checks if the `here` package is installed, if not, installs 
+if(! requireNamespace("here",quietly=TRUE)){
+  install.packages("here")
+}
+
+## load libraries
+library(here) # load `here` package
+```
+
+## Pipeline for sorting Arenas lab image files
+
+In this demo, we will use `source` to load the various functions that
+we will use.
+
+```{r load_functions}
+source(here("arenas-03","arenasImageOrganizer","R","name_checker.R"))
+source(here("arenas-03","arenasImageOrganizer","R","file_mover.R"))
+source(here("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
+```
+
+```{r load_functions_no_here, eval=FALSE}
+source(file.path("arenas-03","arenasImageOrganizer","R","name_checker.R"))
+source(file.path("arenas-03","arenasImageOrganizer","R","file_mover.R"))
+source(file.path("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
+```
+
+The ultimate goal is to take all these functions and turn them into an
+R package that you could install and load like other R packages:
+
+```{r load_package_example, eval=FALSE)
+if(! requireNamespace("devtools",quietly=TRUE)){
+  install.packages("devtools")
+}
+
+install_github("ndcn_compbio/arenasImageOrganizer")
+
+library(arenasImageOrganizer)
+```
+
+In this exercise, we have our files located in the `files` subfolder
+in the `arenas-03` folder, and we want to be able to check that they
+are named correctly, and then move them into the `moved` subfolder,
+sorted into further subfolders corresponding to the file name. We
+would also try to move them into the `anonymized` subfolder, and
+anonymize the file names after they are moved into their corresponding subfolders.
+
+First, we want to set up a folder for logging our runs. The
+simplest thing to do is to create one called `logs`
+
+```{r make_log_folder}
+if(! dir.exists(here("arenas-03","logs"))){
+    dir.create(here("arenas-03","logs"))
+}
+```
+
+```{r make_log_folder_no_here, eval=FALSE}
+if(! dir.exists(file.path("arenas-03","logs"))){
+    dir.create(file.path("arenas-03","logs"))
+}
+```
+
+You should hopefully now see a new folder called `logs` in the
+`arenas-03` folder
+
+### Check file names using `name_checker()`
+
+First, we want to make sure that the files that we want to move around
+are named according to the convention set up by the Arenas lab. We
+will be using the `name_checker()` function that was developed in
+Hackathon 2. 
+
+Just to remind you what the `name_checker()` function requires:
+
+```{r name_checker_usage}
+args(name_checker)
+```
+
+So, to check the image file names in a folder, you need to provide the
+folder (in this case, called `files`) to the `name_checker()`
+function, and store the output (a log of the check results):
+
+```{r name_checker}
+name_check_log  <- name_checker(here("arenas-03","files"))
+```
+
+```{r name_checker_no_here}
+name_check_log  <- name_checker(file.path("arenas-03","files"))
+```
+
+Note that since the parameter `print2screen` is `TRUE` by default, you
+will get an output of the checked results on your screen as well. If
+you don't want it to print to the screen (especially if there are a
+lot of files and it fills up your workspace), you can add
+`print2screen=FALSE` as a parameter to `name_checker()`:
+
+```{r name_checker_no_screen_output, eval=FALSE}
+name_check_log  <- name_checker(here("arenas-03","files"), print2screen=FALSE)
+```
+
+It is then recommended that you save the log output from the
+`name_checker()` (especially if you didn't print to screen), so you
+can carefully check that your files were named correctly.
+
+```{r write_name_checker_log}
+write.table(name_check_log, here("arenas-03","logs","name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+```{r write_name_checker_log_no_here, eval=FALSE}
+write.table(name_check_log, file.path("arenas-03","logs","name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+### Organizing the image files into appropriate subfolders
+
+Once you have checked that all the files are named correctly, we can
+now try to sort/organize the image files into appropriate subfolders.
+
+Based on the Arenas lab's nomenclature, the first three sections of
+the file name corresponds to the three subfolders that the file would
+go into.
+
+For example: 
+
+`HESH9-CS_201001_d11-CT0.3_181002_DAPI+rbLMX1AKN-dk555_181109_CF_10Xz2-1.tif`
+
+The first three sections are `HESH9-CS`, `201001`, and
+`d11-CT0.3`. Thus the final location of the file would be in this
+subfolder:
+
+```
+HESH9-CS/
+    201001/
+	    d11-CT0.3/
+```
+
+To run this, we can use a modified version of the
+`batch_rename_files.R` script from Hackathon 1, now a function called
+`file_mover()` (since for computer systems, moving/copying files is
+functionally the same as renaming them)
+
+Let's get an idea of what the `file_mover()` function requires:
+
+```{r file_mover_usage}
+args(file_mover)
+```
+
+You can see that there are three parameters:
+1. `folder`: You need to provide the folder where the image files
+   (after checking their names) are located
+2. `dest_root`: This is a folder where you want to make the various
+   subfolders to organize your image. By default, it is the same
+   folder as you have the files, but it also allows you to separate
+   the original image files from the organized files (and lets your
+   check that things are copied over correctly before you delete them)
+3. `anonymize`: We will go into that later.
+
+In our example, we would take all the image files in the `files`
+folder, and organize them into the corresponding subfolders within the
+`moved` folder. This is the code to do this:
+
+```{r organize_files}
+file_move_log <- file_mover(here("arenas-03","files"),here("arenas-03","moved"))
+write.table(file_move_log,here("arenas-03","logs","file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+```{r organize_files_no_here, eval=FALSE}
+file_move_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","moved"))
+write.table(file_move_log,file.path("arenas-03","logs","file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+If you now look in the `moved` folder, you should now see a set of
+subfolders that should correspond to the first section of the original
+file name. If you traverse further inside, you should see a subfolder
+for the second, and then the third, section of the file name. You
+would also notice that the organized file name is now shorter, as it
+no longer requires the first three sections.
+
+A log file is also produced in the `logs` folder providing a full list
+of files that were processed, and the subfolders that they were copied
+to.
+
+### Anonymizing files for blinded analyses
+
+One idea that was suggested by the Arenas lab was the ability to
+anonymize the file names so that researchers could analyze them
+blindly.
+
+This could be achieved by the `file_anonymizer()` function.
+
+```{r file_anonymizer_usage}
+args(file_anonymizer)
+```
+
+This function takes a folder (typically the folder that contains the
+image files), and generate a somewhat randomized name for each of the
+files within (restricted to image files). 
+
+The current format for the "anonymized" file is the following, but
+could be easily modified:
+
+`anonymizedFile_[date it was anonymized]_["random" number]`
+
+The "random" number is chosen by get a list of numbers corresponding
+to the number of files in that folder to be anonymized, and the
+randomly selecting (without replacing) the number from that list.
+
+A log file is automatically generated in the folder (`[date of
+anonymizing]_file_key.log`), which describes the original file name of
+the anonymized files. By default, the original file is deleted after
+it is given an anonymized name, but you can change the `deleteOrig`
+value to `FALSE` to keep the file.
+
+Here is how you can run it on a single folder:
+
+```{r anonymize_example}
+file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
+write.table(file_anon_log,here("arenas-03","logs","file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+```{r anonymize_example_no_here, eval=FALSE}
+file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
+write.table(file_anon_log,file.path("arenas-03","logs","file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+If you now go into the `HESH9-CS/201001/GFP/` subfolder in `moved`,
+you should see that there are two new "anonymized" files, and a log
+file containing the information of their origin.
+
+However, you might want to do the anonymization at the same time as
+organizing the image files, especially if you are creating many
+subfolders that you would have to process one by one with the above
+method. Hence, there is an option to run `file_mover()` to also call
+`file_anonymizer()`, so you can do both steps at the same time.
+
+In this example, I will move and anonymize the files into a different
+folder called `anonymized`
+
+```{r move_and_anonymize}
+file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,here("arenas-03","logs","file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+```{r move_and_anonymize_no_here}
+file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,file.path("arenas-03","logs","file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+If you now navigate to the `anonymize` folder, you can see that the
+subfolder structure is there, but now each file is anonymized. For
+each folder, there is also a log file with the identity of the
+anonymized file name.
+
+## Future improvements
+
+1. Package these scripts into an R package so it can be installed and
+   loaded easily by users
+2. Write a better R workflow/function as a one-step command to do all
+   of this, and improving the logging of results (e.g. add dates to
+   the log file names)
+3. Adapting the file name nomenclature (especially for anonymized
+   files) according to what the Arenas would like best.
+4. Whatever else the Arenas lab could think of.
