@@ -105,14 +105,16 @@ First, we want to set up a folder for logging our runs. The
 simplest thing to do is to create one called `logs`
 
 ```{r make_log_folder}
-if(! dir.exists(here("arenas-03","logs"))){
-    dir.create(here("arenas-03","logs"))
+log_path <- "arenas-03/logs"
+if(! dir.exists(here(log_path))){
+    dir.create(here(log_path))
 }
 ```
 
 ```{r make_log_folder_no_here, eval=FALSE}
-if(! dir.exists(file.path("arenas-03","logs"))){
-    dir.create(file.path("arenas-03","logs"))
+log_path <- "arenas-03/logs"
+if(! dir.exists(file.path(log_path))){
+    dir.create(file.path(log_path))
 }
 ```
 
@@ -159,11 +161,11 @@ It is then recommended that you save the log output from the
 can carefully check that your files were named correctly.
 
 ```{r write_name_checker_log}
-write.table(name_check_log, here("arenas-03","logs","name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(name_check_log, here(log_path,"name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 ```{r write_name_checker_log_no_here, eval=FALSE}
-write.table(name_check_log, file.path("arenas-03","logs","name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(name_check_log, file.path(log_path,"name_checker_log.txt"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 ### Organizing the image files into appropriate subfolders
@@ -216,12 +218,12 @@ folder, and organize them into the corresponding subfolders within the
 
 ```{r organize_files}
 file_move_log <- file_mover(here("arenas-03","files"),here("arenas-03","moved"))
-write.table(file_move_log,here("arenas-03","logs","file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(file_move_log,here(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 ```{r organize_files_no_here, eval=FALSE}
 file_move_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","moved"))
-write.table(file_move_log,file.path("arenas-03","logs","file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(file_move_log,file.path(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 If you now look in the `moved` folder, you should now see a set of
@@ -270,12 +272,12 @@ Here is how you can run it on a single folder:
 
 ```{r anonymize_example}
 file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
-write.table(file_anon_log,here("arenas-03","logs","file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(file_anon_log,here(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 ```{r anonymize_example_no_here, eval=FALSE}
 file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
-write.table(file_anon_log,file.path("arenas-03","logs","file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+write.table(file_anon_log,file.path(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 If you now go into the `HESH9-CS/201001/GFP/` subfolder in `moved`,
@@ -293,12 +295,12 @@ folder called `anonymized`
 
 ```{r move_and_anonymize}
 file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,here("arenas-03","logs","file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+write.table(file_move_anon_log,here(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
 ```
 
 ```{r move_and_anonymize_no_here}
 file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,file.path("arenas-03","logs","file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+write.table(file_move_anon_log,file.path(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
 ```
 
 If you now navigate to the `anonymize` folder, you can see that the
