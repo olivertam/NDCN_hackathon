@@ -84,7 +84,7 @@ source(file.path("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
 The ultimate goal is to take all these functions and turn them into an
 R package that you could install and load like other R packages:
 
-```{r load_package_example, eval=FALSE)
+```{r load_package_example, eval=FALSE}
 if(! requireNamespace("devtools",quietly=TRUE)){
   install.packages("devtools")
 }
@@ -271,12 +271,12 @@ value to `FALSE` to keep the file.
 Here is how you can run it on a single folder:
 
 ```{r anonymize_example}
-file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
+file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
 write.table(file_anon_log,here(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
 ```{r anonymize_example_no_here, eval=FALSE}
-file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE))
+file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
 write.table(file_anon_log,file.path(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
 ```
 
