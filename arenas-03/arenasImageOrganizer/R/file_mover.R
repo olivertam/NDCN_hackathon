@@ -51,7 +51,7 @@ file_mover <- function(folder, dest_root=folder, anonymize=FALSE){
     
     ## Check that the folder exists
     if(! dir.exists(folder)){
-        log = paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
+        log = paste0(c(paste("This folder", folder, "does not exist."),"Please double-check"))
         return(log)
     }
     
@@ -59,7 +59,7 @@ file_mover <- function(folder, dest_root=folder, anonymize=FALSE){
     ## Only look for TIFF files or Zeiss microscope output (*.czi or *.lsm)
     files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$|\\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
     if(length(files) < 1){
-        log = c(paste("No suitable files identified in",folder),"")
+        log = c(paste("No suitable files identified in",folder))
         return(log)
     }
 

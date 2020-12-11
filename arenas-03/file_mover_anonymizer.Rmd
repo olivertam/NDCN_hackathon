@@ -1,0 +1,426 @@
+---
+title: "Arenas image sorting pipeline"
+author: "Oliver Tam and Julie Lowndes"
+date: "10/1/2020"
+output: html_document
+---
+
+## Introduction
+
+This document is to explain the script `file_mover.R` for moving image
+files that are labelled according to the Arenas lab convention.
+
+For each file name, we expect 8 sections, each separated by an underscore `_`:
+
+1. Experimental name and researcher initials
+2. Experiment date and experiment number
+3. Condition and replicate number
+4. Immunohistochemistry date
+5. Dye, antibodies or transcript
+6. Image capture date
+7. Microscope type
+8. Lens, zoom and image number
+
+Example:
+
+`HESH9-CS_201001_d11-CT0.3_181002_DAPI+rbLMX1AKN-dk555_181109_CF_10Xz2-1.tif`
+
+Where:
+
+- Experiment name & initial: `HESH9-CS`. 
+- Experiment date (and number if provided): `181002`
+- Condition (and replicate if provided): `d11-CT0.3`.
+- Immunohistochemistry date: `201002`
+- Dye/antibodies/transcript: `DAPI+rbLMX1AKN-dk555`.
+- Image capture date: `181109`
+- Microscope type: `CF`
+- Lens, zoom & image number: `10X-z2-3`
+
+## Setup
+
+Download or clone the GitHub folder: <https://github.com/olivertam/NDCN_hackathon>. Move it somewhere you do your analyses (we can discuss strategic options later).
+
+Open the GitHub folder from RStudio File > Open Project... or in Finder/Windows Explorer by double-clicking the `NDCN_hackathon.Rproj` file.
+
+Navigate to the "arenas-03" folder.
+
+We will work from this `file_mover.Rmd` document today. It is
+an R Markdown document, which combines simple text and R code. You can
+use the Table of Contents at the bottom of the file to navigate. And
+please add your own notes!
+
+We will load one library, `here`, which reduces potential filepath
+issues. If you have trouble with the `here` package, an option will be
+provided to run the code without it.
+
+```{r setup}
+## checks if the `here` package is installed, if not, installs 
+if(! requireNamespace("here",quietly=TRUE)){
+  install.packages("here")
+}
+
+## load libraries
+library(here) # load `here` package
+```
+
+## Loading functions for sorting Arenas lab image files
+
+In this demo, we will use `source` to load the various functions that
+we will use.
+
+```{r load_functions}
+source(here("arenas-03","arenasImageOrganizer","R","file_mover.R"))
+source(here("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
+```
+
+```{r load_functions_no_here, eval=FALSE}
+source(file.path("arenas-03","arenasImageOrganizer","R","file_mover.R"))
+source(file.path("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
+```
+
+In this exercise, we have our files located in the `files` subfolder
+in the `arenas-03` folder. Hopefully they have all been checked with
+the `name_checker()` function to ensure that they are correctly named
+
+The goal of the script move them into the `moved` subfolder (which is
+the "root" of the directory tree), and then sort into further
+subfolders ("branches") corresponding to the file name. 
+
+First, we want to set up a folder for logging our command. The
+simplest thing to do is to create one called `logs`
+
+```{r make_log_folder}
+log_path <- "arenas-03/logs"
+if(! dir.exists(here(log_path))){
+    dir.create(here(log_path))
+}
+```
+
+```{r make_log_folder_no_here, eval=FALSE}
+log_path <- "arenas-03/logs"
+if(! dir.exists(file.path(log_path))){
+    dir.create(file.path(log_path))
+}
+```
+
+You should hopefully now see a new folder called `logs` in the
+`arenas-03` folder
+
+### Organizing the image files into appropriate subfolders
+
+Once you have checked that all the files are named correctly, we can
+now try to sort/organize the image files into appropriate subfolders.
+
+Based on the Arenas lab's nomenclature, the first three sections of
+the file name corresponds to the three subfolders that the file would
+go into.
+
+For example: 
+
+`HESH9-CS_201001_d11-CT0.3_181002_DAPI+rbLMX1AKN-dk555_181109_CF_10Xz2-1.tif`
+
+The first three sections are `HESH9-CS`, `201001`, and
+`d11-CT0.3`. Thus the final location of the file would be in this
+subfolder:
+
+```
+HESH9-CS/
+    201001/
+	    d11-CT0.3/
+```
+
+To run this, we can use a modified version of the
+`batch_rename_files.R` script from Hackathon 1, now a function called
+`file_mover()` (since for computer systems, moving/copying files is
+functionally the same as renaming them)
+
+Let's get an idea of what the `file_mover()` function requires:
+
+```{r file_mover_usage}
+args(file_mover)
+```
+
+You can see that there are three parameters:
+1. `folder`: You need to provide the folder where the image files
+   (after checking their names) are located
+2. `dest_root`: This is a folder where you want to make the various
+   subfolders to organize your image. By default, it is the same
+   folder as you have the files, but it also allows you to separate
+   the original image files from the organized files (and lets your
+   check that things are copied over correctly before you delete them)
+3. `anonymize`: We will go into that later.
+
+In our example, we would take all the image files in the `files`
+folder, and organize them into the corresponding subfolders within the
+`moved` folder. This is the code to do this:
+
+```{r organize_files}
+file_move_log <- file_mover(here("arenas-03","files"),here("arenas-03","moved"))
+write.table(file_move_log,here(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+```{r organize_files_no_here, eval=FALSE}
+file_move_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","moved"))
+write.table(file_move_log,file.path(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+If you now look in the `moved` folder, you should now see a set of
+subfolders that should correspond to the first section of the original
+file name. If you traverse further inside, you should see a subfolder
+for the second, and then the third, section of the file name. You
+would also notice that the organized file name is now shorter, as it
+no longer requires the first three sections.
+
+A log file is also produced in the `logs` folder providing a full list
+of files that were processed, and the subfolders that they were copied
+to.
+
+#### How does it work?
+
+Let's remind ourselves what the `file_mover()` function requires:
+
+```{r file_mover_usage}
+args(file_mover)
+```
+
+You can see that there are three parameters:
+1. `folder`: the folder that has your original files
+2. `dest_root`: the "root" folder where you want them to go
+3. `anonymize`: if you want to anonymize them
+
+We will now dive a little deeper into how it works. If you want to
+follow along, the actual code is located in `arenasImageOrganizer/R`
+folder
+
+The code first checks that the `folder` (the folder with your original
+files) actually exists:
+
+```{r check_directory, eval=FALSE}
+if(! dir.exists(folder)){
+    log = paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
+    return(log)
+}
+```
+
+In the section after the `if` (also called the "conditional"), it runs
+the `dir.exists()` function, which returns a `TRUE/FALSE` on whether
+the folder exists. Then, 
+
+```{r conditional_test}
+folder = here("arenas-03","files")
+log = "Does the provided folder exist?"
+
+### What is in the code
+if(! dir.exists(folder)){
+    log = c(log,paste0(c(paste("This folder", folder, "does not exist."),"Please double-check","")))
+}
+
+### What happens when we remove the '!'
+if(dir.exists(folder)){
+    log = c(log(paste(c(paste("This folder", folder, "actually exist."),"Please double-check","")))
+}
+cat(log, sep="\n")
+```
+
+Next, it looks for files that match the expected Zeiss output (`*.czi`
+or `*.lsm`) or TIFF (`*.tif` or `*.tiff`). If it doesn't find any
+suitable files, it'll report back with an error message.
+
+```{r find_files, eval=FALSE}
+files <- setdiff(list.files(folder, pattern="\\.czi$|\\.tif$|\\.tiff$|\\.lsm$",full.names = TRUE), list.dirs(recursive = FALSE))
+if(length(files) < 1){
+    log = c(paste("No suitable files identified in",folder))
+    return(log)
+}
+```
+
+After these initial checks, it will set up a log file with the date
+and time for when the script started, and then look process the list
+of files. For each file, it does a quick first check to make sure the
+name has 8 sections separated by an underscore `_`:
+
+```{r quick_check_filename, eval=FALSE}
+file_info <- unlist(strsplit(current_file, "_",fixed=TRUE))
+if(length(file_info) != 8){
+    stop("The file name does not fit the expected nomenclature. Not progressing further.")
+}
+```
+
+If the name checks out, then it will identify and create the sub-directories that
+the file should go to (based on the first 3 sections), and have the
+new file name containing sections 4-8.
+
+```{r setup_dir, eval=FALSE}
+subdir <- paste(file_info[1:3],collapse="/")
+newfile <- paste(file_info[4:length(file_info)],collapse="_")
+
+destination  <- paste(dest_root,subdir,sep="/")
+if(! dir.exists(destination)){
+    dir.create(destination,recursive=TRUE)
+}
+```
+
+So, for example:
+`HESH9-CS_201001_d11-CT0.3_201002_DAPI+rbAADC-dk488+shTH-dk555_201003_CF_20Xz1-1.tif`
+will be transfered to the subfolder: `HESH9-CS/201001/d11-CT0.3`, and
+named `201002_DAPI+rbAADC-dk488+shTH-dk555_201003_CF_20Xz1-1.tif`
+
+For now, it will copy the file to the new location, but there is code
+to actually move (so delete from original location). We will also
+document where the file was copied to.
+
+```{r move_copy_files, eval=FALSE}
+### To move the file
+file.move(files[i],paste(destination,newfile,sep="/"))
+
+
+### To copy the file
+file.copy(files[i],paste(destination,newfile,sep="/"))
+
+destList <- c(destList,destination)
+log <- c(log,paste(current_file,"moved to",subdir))
+```
+
+### Anonymizing files for blinded analyses
+
+One idea that was suggested by the Arenas lab was the ability to
+anonymize the file names so that researchers could analyze them
+blindly.
+
+This could be achieved by the `file_anonymizer()` function.
+
+```{r file_anonymizer_usage}
+args(file_anonymizer)
+```
+
+This function takes a folder (typically the folder that contains the
+image files), and generate a somewhat randomized name for each of the
+files within (restricted to image files). 
+
+The current format for the "anonymized" file is the following, but
+could be easily modified:
+
+`anonymizedFile_[date it was anonymized]_["random" number]`
+
+The "random" number is chosen by get a list of numbers corresponding
+to the number of files in that folder to be anonymized, and the
+randomly selecting (without replacing) the number from that list.
+
+A log file is automatically generated in the folder (`[date of
+anonymizing]_file_key.log`), which describes the original file name of
+the anonymized files. By default, the original file is deleted after
+it is given an anonymized name, but you can change the `deleteOrig`
+value to `FALSE` to keep the file.
+
+Here is how you can run it on a single folder:
+
+```{r anonymize_example}
+file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
+write.table(file_anon_log,here(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+```{r anonymize_example_no_here, eval=FALSE}
+file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
+write.table(file_anon_log,file.path(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+```
+
+If you now go into the `HESH9-CS/201001/GFP/` subfolder in `moved`,
+you should see that there are two new "anonymized" files, and a log
+file containing the information of their origin.
+
+However, you might want to do the anonymization at the same time as
+organizing the image files, especially if you are creating many
+subfolders that you would have to process one by one with the above
+method. Hence, there is an option to run `file_mover()` to also call
+`file_anonymizer()`, so you can do both steps at the same time.
+
+In this example, I will move and anonymize the files into a different
+folder called `anonymized`
+
+```{r move_and_anonymize}
+file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,here(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+```{r move_and_anonymize_no_here}
+file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,file.path(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+If you now navigate to the `anonymize` folder, you can see that the
+subfolder structure is there, but now each file is anonymized. For
+each folder, there is also a log file with the identity of the
+anonymized file name.
+
+
+#### How does it work
+
+Just to remind ourselves what the `file_anonymizer()` function requires:
+
+```{r file_anonymizer_usage}
+args(file_anonymizer)
+```
+
+1. folder: the folder with the files to be anonymized
+2. deleteOrig (TRUE/FALSE): do we delete the original file after
+   anonymizing
+   
+First, the function checks that the folder you provided exists, in the
+same way as the `file_mover()` function. It will then start a log
+file with the date and time of the anonymization. It will then search
+for all the relevant files (e.g. `*.tiff`) to be anonymize, again,
+exactly the same way that `file_mover()` works.
+
+The next step is an attempt to "randomize" the file name. My approach
+is to generate numbers from 1 to N, where N is the total number of
+files:
+
+```{r counter, eval=FALSE}
+counter <- 1:length(files)
+```
+
+Then, for each file, I get the extension (e.g. `.tif`), and then
+"randomly" choose a number from the counter list (without replacement)
+
+```{r choose_without_replacement, eval=FALSE}
+if(length(counter) == 1){
+    ### Only 1 number left
+    filenum <- counter
+}else{
+    ### sample "randomly" from the numbers
+    filenum <- sample(counter,1)
+    ### remove the chosen number
+    counter <- counter[counter != filenum]
+}
+```
+
+It then generates a "anonymized" filename starting with
+`anonymizedFile`, current date, the random number (separated by
+underscores `_`), and then the file extension (with the dot before
+it). It will then make a copy of the file with anonymized name, and
+ if you asked for the original to be deleted, delete the original
+ file. It would also store the new and original name in `dict`, which
+ will be used to write into a log (in the folder with the anonymized
+ file) so that there is a way to re-identify the anonymized files
+
+```{r create_anon_name, eval=FALSE}
+anonDate <- format(today, format="%y%m%d")
+newfile <- paste0("anonymizedFile_",anonDate,"_",filenum,".", extension)
+output <- paste0(folder,"/", newfile)
+file.copy(files[i], output)
+if(deleteOrig){
+    file.remove(files[i])
+}
+dict = rbind(dict,c(newfile,oldfile))
+```
+
+## Future improvements
+
+1. Package these scripts into an R package so it can be installed and
+   loaded easily by users
+2. Write a better R workflow/function as a one-step command to do all
+   of this, and improving the logging of results (e.g. add dates to
+   the log file names)
+3. Adapting the file name nomenclature (especially for anonymized
+   files) according to what the Arenas would like best.
+4. Whatever else the Arenas lab could think of.
