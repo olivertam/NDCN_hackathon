@@ -83,13 +83,13 @@ file_mover <- function(folder, dest_root=folder, anonymize=FALSE){
         newfile <- paste(file_info[4:length(file_info)],collapse="_")
 
         ## Move the file, store the destination with a new file and make notes in log
-        destination  <- paste(dest_root,subdir,sep="/")
+        destination  <- file.path(dest_root,subdir)
         if(! dir.exists(destination)){
             dir.create(destination,recursive=TRUE)
         }
         
-#        file.move(files[i],paste(destination,newfile,sep="/"))
-        file.copy(files[i],paste(destination,newfile,sep="/"))
+#        file.move(files[i],file.path(destination,newfile))
+        file.copy(files[i],file.path(destination,newfile))
 
         destList <- c(destList,destination)
         log <- c(log,paste(current_file,"moved to",subdir))

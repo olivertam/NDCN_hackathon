@@ -35,18 +35,12 @@ file_anonymizer <- function(folder,deleteOrig=TRUE){
   ## Anonymize file names by random assignment of number to name based on total number of files ----  
     counter <- 1:length(files)
     dict <- matrix(ncol=2)
-  
-    for(i in 1:length(files)){   # i = 1
+    filenum <- sample(counter,length(files))
+    for(i in 1:length(files)){
         oldfile <- basename(files[i])
         extension <- tools::file_ext(files[i])
-        if(length(counter) == 1){
-            filenum <- counter
-        }else{
-            filenum <- sample(counter,1)
-            counter <- counter[counter != filenum]
-        }
         anonDate <- format(today, format="%y%m%d")
-        newfile <- paste0("anonymizedFile_",anonDate,"_",filenum,".", extension)
+        newfile <- paste0("anonymizedFile_",anonDate,"_",filenum[i],".", extension)
         output <- paste0(folder,"/", newfile)
         file.copy(files[i], output)
         if(deleteOrig){

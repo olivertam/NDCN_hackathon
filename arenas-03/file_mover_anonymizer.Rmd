@@ -185,7 +185,7 @@ args(file_mover)
 
 You can see that there are three parameters:
 1. `folder`: the folder that has your original files
-2. `dest_root`: the "root" folder where you want them to go
+2. `dest_root`: the "root" folder where you want them to go. If you don't provide it, it will be the same folder as your files
 3. `anonymize`: if you want to anonymize them
 
 We will now dive a little deeper into how it works. If you want to
@@ -208,16 +208,17 @@ the folder exists. Then,
 
 ```{r conditional_test}
 folder = here("arenas-03","files")
+folder
 log = "Does the provided folder exist?"
 
 ### What is in the code
 if(! dir.exists(folder)){
-    log = c(log,paste0(c(paste("This folder", folder, "does not exist."),"Please double-check","")))
+    log = c(log,"This folder does not exist.")
 }
 
 ### What happens when we remove the '!'
 if(dir.exists(folder)){
-    log = c(log(paste(c(paste("This folder", folder, "actually exist."),"Please double-check","")))
+    log = c(log,"This folder actually exist.")
 }
 cat(log, sep="\n")
 ```
@@ -254,7 +255,7 @@ new file name containing sections 4-8.
 subdir <- paste(file_info[1:3],collapse="/")
 newfile <- paste(file_info[4:length(file_info)],collapse="_")
 
-destination  <- paste(dest_root,subdir,sep="/")
+destination  <- file.path(dest_root,subdir)
 if(! dir.exists(destination)){
     dir.create(destination,recursive=TRUE)
 }
@@ -271,11 +272,11 @@ document where the file was copied to.
 
 ```{r move_copy_files, eval=FALSE}
 ### To move the file
-file.move(files[i],paste(destination,newfile,sep="/"))
+file.move(files[i],file.path(destination,newfile))
 
 
 ### To copy the file
-file.copy(files[i],paste(destination,newfile,sep="/"))
+file.copy(files[i],file.path(destination,newfile))
 
 destList <- c(destList,destination)
 log <- c(log,paste(current_file,"moved to",subdir))
@@ -328,31 +329,6 @@ If you now go into the `HESH9-CS/201001/GFP/` subfolder in `moved`,
 you should see that there are two new "anonymized" files, and a log
 file containing the information of their origin.
 
-However, you might want to do the anonymization at the same time as
-organizing the image files, especially if you are creating many
-subfolders that you would have to process one by one with the above
-method. Hence, there is an option to run `file_mover()` to also call
-`file_anonymizer()`, so you can do both steps at the same time.
-
-In this example, I will move and anonymize the files into a different
-folder called `anonymized`
-
-```{r move_and_anonymize}
-file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,here(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
-```
-
-```{r move_and_anonymize_no_here}
-file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,file.path(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
-```
-
-If you now navigate to the `anonymize` folder, you can see that the
-subfolder structure is there, but now each file is anonymized. For
-each folder, there is also a log file with the identity of the
-anonymized file name.
-
-
 #### How does it work
 
 Just to remind ourselves what the `file_anonymizer()` function requires:
@@ -381,21 +357,70 @@ counter <- 1:length(files)
 
 Then, for each file, I get the extension (e.g. `.tif`), and then
 "randomly" choose a number from the counter list (without replacement)
+Let's actually watch this in action:
 
-```{r choose_without_replacement, eval=FALSE}
-if(length(counter) == 1){
+```{r sample_without_replacement}
+counter <- 1:10 # Dummy example where we have 10 files
+header = paste0("OrigFile",counter) # Just to remind ourselves what the original file order was
+cat("This is the list of numbers\n")
+counter
+
+result <- vector()
+  
+cat("\nLet's run this\n")
+while(length(counter) > 0){
+  if(length(counter) == 1){
     ### Only 1 number left
     filenum <- counter
-}else{
+    result <- c(result,filenum)
+    cat(paste("\nThis is the last number,",filenum),"\n")
+    counter <- counter[counter != filenum]
+  }else{
     ### sample "randomly" from the numbers
     filenum <- sample(counter,1)
+    cat(paste("\nThis number was chosen,",filenum),"\n")
+    result <- c(result,filenum)
     ### remove the chosen number
     counter <- counter[counter != filenum]
+    cat("This is what is left:\n")
+    print(counter)
+  }
+}
+names(result) = header
+cat("\nHere is the anonymized number list:\n")
+result
+```
+
+The code above is a very long-winded way to do it, but allows me to watch, step-by-step, how the numbers are being removed. This is actually the code that was in the first version of the `file_anonymizer()` function (back in October). If you are interested to see this version, you should be able to check it out using Github.
+
+However, there is a more concise way to do this sampling:
+
+```{r simplified_sample_without_replacement}
+counter <- 1:10
+header <- paste0("OrigFile",counter)
+result <- sample(counter,length(counter))
+names(result) = header
+result
+```
+
+The important question: Is it different everytime you run it? You don't want to "anonymize" the same way each time.
+Let's test it out:
+
+```{r multiple_sample_without_replacement}
+counter <- 1:10
+header = paste0("OrigFile",counter)
+
+result <- vector()
+for(i in 1:5){
+  result <- sample(counter,length(counter))
+  names(result) <- header
+  cat(paste("Here is the anonymized number list for run", i),"\n")
+  print(result)
 }
 ```
 
-It then generates a "anonymized" filename starting with
-`anonymizedFile`, current date, the random number (separated by
+After it gets the "random number" then generates a "anonymized" filename starting with
+`anonymizedFile`, current date, the  number (all separated by
 underscores `_`), and then the file extension (with the dot before
 it). It will then make a copy of the file with anonymized name, and
  if you asked for the original to be deleted, delete the original
@@ -405,14 +430,71 @@ it). It will then make a copy of the file with anonymized name, and
 
 ```{r create_anon_name, eval=FALSE}
 anonDate <- format(today, format="%y%m%d")
-newfile <- paste0("anonymizedFile_",anonDate,"_",filenum,".", extension)
+newfile <- paste0("anonymizedFile_",anonDate,"_",filenum[i],".", extension)
 output <- paste0(folder,"/", newfile)
 file.copy(files[i], output)
 if(deleteOrig){
     file.remove(files[i])
 }
-dict = rbind(dict,c(newfile,oldfile))
+dict <- rbind(dict,c(newfile,oldfile))
 ```
+
+
+### Move & Anonymize
+
+Sometimes, you might want to do the anonymization at the same time as
+organizing the image files, especially if you are creating many
+subfolders that you would have to process one by one with the above
+method. Hence, there is an option to run `file_mover()` to also call
+`file_anonymizer()`, so you can do both steps at the same time.
+
+In this example, I will move and anonymize the files into a different
+folder called `anonymized`
+
+```{r move_and_anonymize}
+file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,here(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+```{r move_and_anonymize_no_here}
+file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
+write.table(file_move_anon_log,file.path(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+```
+
+If you now navigate to the `anonymize` folder, you can see that the
+subfolder structure is there, but now each file is anonymized. For
+each folder, there is also a log file with the identity of the
+anonymized file name.
+
+#### How it works
+
+This is using the third parameter from the `file_mover()` function:
+
+```{r file_mover_usage}
+args(file_mover)
+```
+
+When we set `anonymize=TRUE`, then it will run the following code in the `file_mover()` script:
+
+```{r file_move_anon, eval=FALSE}
+# We have been storing the folder names where files have been moved as part of file_mover()
+destList <- c(destList,destination)
+
+# The following will run if anonymize = TRUE
+if(anonymize){
+    log = c(log,"")
+    # Get a list of unique folders that had a file moved to it
+    destList <- unique(destList)
+    
+    for(i in 1:length(destList)){
+      # Anonymize all files in each of the folder
+      anonlog <- file_anonymizer(destList[i])
+      log <- c(log,anonlog)
+    }
+}
+```
+
+Note that the `file_mover()` script is calling the `file_anonymizer()` script. By loading all the Arenas lab scripts, it now treats `file_anonymizer()` like other built-in R functions (e.g. `unique`).
 
 ## Future improvements
 
