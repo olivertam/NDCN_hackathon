@@ -44,7 +44,7 @@ Open the GitHub folder from RStudio File > Open Project... or in Finder/Windows 
 
 Navigate to the "arenas-03" folder.
 
-We will work from this `file_mover.Rmd` document today. It is
+We will work from this `file_mover_anonymizer.Rmd` document today. It is
 an R Markdown document, which combines simple text and R code. You can
 use the Table of Contents at the bottom of the file to navigate. And
 please add your own notes!
@@ -80,13 +80,13 @@ source(file.path("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
 
 In this exercise, we have our files located in the `files` subfolder
 in the `arenas-03` folder. Hopefully they have all been checked with
-the `name_checker()` function to ensure that they are correctly named
+the `name_checker()` function to ensure that they are correctly named.
 
-The goal of the script move them into the `moved` subfolder (which is
+The goal of the script is to move them into the `moved` subfolder (which is
 the "root" of the directory tree), and then sort into further
 subfolders ("branches") corresponding to the file name. 
 
-First, we want to set up a folder for logging our command. The
+First, we want to set up a folder for logging our commands. The
 simplest thing to do is to create one called `logs`
 
 ```{r make_log_folder}
@@ -155,13 +155,13 @@ folder, and organize them into the corresponding subfolders within the
 `moved` folder. This is the code to do this:
 
 ```{r organize_files}
-file_move_log <- file_mover(here("arenas-03","files"),here("arenas-03","moved"))
-write.table(file_move_log,here(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+file_move_log <- file_mover(here("arenas-03", "files"), here("arenas-03","moved"))
+write.table(file_move_log, here(log_path, "file_mover.log"), sep="\n", quote=F, row.names=F, col.names=F)
 ```
 
 ```{r organize_files_no_here, eval=FALSE}
-file_move_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","moved"))
-write.table(file_move_log,file.path(log_path,"file_mover.log"),sep="\n",quote=F,row.names=F,col.names=F)
+file_move_log <- file_mover(file.path("arenas-03", "files"), file.path("arenas-03", "moved"))
+write.table(file_move_log, file.path(log_path, "file_mover.log"), sep="\n", quote=F, row.names=F, col.names=F)
 ```
 
 If you now look in the `moved` folder, you should now see a set of
@@ -197,7 +197,7 @@ files) actually exists:
 
 ```{r check_directory, eval=FALSE}
 if(! dir.exists(folder)){
-    log = paste(c(paste("This folder", folder, "does not exist."),"Please double-check",""))
+    log = paste(c(paste("This folder", folder, "does not exist."), "Please double-check", ""))
     return(log)
 }
 ```
@@ -316,20 +316,20 @@ value to `FALSE` to keep the file.
 Here is how you can run it on a single folder:
 
 ```{r anonymize_example}
-file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
-write.table(file_anon_log,here(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"), deleteOrig=FALSE)
+write.table(file_anon_log, here(log_path, "file_anonymize.log"), sep="\n", quote=F, row.names=F, col.names=F)
 ```
 
 ```{r anonymize_example_no_here, eval=FALSE}
-file_anon_log <- file_anonymizer(file.path("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
-write.table(file_anon_log,file.path(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+file_anon_log <- file_anonymizer(file.path("arenas-03", "moved", "HESH9-CS", "201001", "GFP"), deleteOrig=FALSE)
+write.table(file_anon_log, file.path(log_path, "file_anonymize.log"), sep="\n", quote=F, row.names=F, col.names=F)
 ```
 
 If you now go into the `HESH9-CS/201001/GFP/` subfolder in `moved`,
 you should see that there are two new "anonymized" files, and a log
 file containing the information of their origin.
 
-#### How does it work
+#### How does it work?
 
 Just to remind ourselves what the `file_anonymizer()` function requires:
 
@@ -452,13 +452,13 @@ In this example, I will move and anonymize the files into a different
 folder called `anonymized`
 
 ```{r move_and_anonymize}
-file_move_anon_log <- file_mover(here("arenas-03","files"),here("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,here(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+file_move_anon_log <- file_mover(here("arenas-03","files"), here("arenas-03", "anonymized"), anonymize=TRUE)
+write.table(file_move_anon_log, here(log_path, "file_move_anonymize.log"), sep="\n", quote=F, row.names=F, col.names=F)                                
 ```
 
 ```{r move_and_anonymize_no_here}
-file_move_anon_log <- file_mover(file.path("arenas-03","files"),file.path("arenas-03","anonymized"),anonymize=TRUE)
-write.table(file_move_anon_log,file.path(log_path,"file_move_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)                                
+file_move_anon_log <- file_mover(file.path("arenas-03", "files"), file.path("arenas-03", "anonymized"), anonymize=TRUE)
+write.table(file_move_anon_log, file.path(log_path, "file_move_anonymize.log"), sep="\n", quote=F, row.names=F, col.names=F)                                
 ```
 
 If you now navigate to the `anonymize` folder, you can see that the
@@ -466,7 +466,7 @@ subfolder structure is there, but now each file is anonymized. For
 each folder, there is also a log file with the identity of the
 anonymized file name.
 
-#### How it works
+#### How does it work?
 
 This is using the third parameter from the `file_mover()` function:
 
@@ -478,7 +478,7 @@ When we set `anonymize=TRUE`, then it will run the following code in the `file_m
 
 ```{r file_move_anon, eval=FALSE}
 # We have been storing the folder names where files have been moved as part of file_mover()
-destList <- c(destList,destination)
+destList <- c(destList, destination)
 
 # The following will run if anonymize = TRUE
 if(anonymize){
