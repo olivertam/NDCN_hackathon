@@ -356,7 +356,7 @@ files:
 counter <- 1:length(files)
 ```
 
-Then, for each file, I get the extension (e.g. `.tif`), and then
+Then, for each file, I then
 "randomly" choose a number from the counter list (without replacement)
 Let's actually watch this in action:
 
@@ -506,4 +506,5 @@ Note that the `file_mover()` script is calling the `file_anonymizer()` script. B
    the log file names)
 3. Adapting the file name nomenclature (especially for anonymized
    files) according to what the Arenas would like best.
-4. Whatever else the Arenas lab could think of.
+4. Handle case issues with file extension
+5. Whatever else the Arenas lab could think of.
