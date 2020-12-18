@@ -1,0 +1,73 @@
+---
+title: "Example Workflow"
+output: html_document
+---
+
+## Save images with Arenas Lab filenaming convention
+
+At the microscope: Take pictures and save image files with naming convention
+
+For each file name, we expect 8 sections, each separated by an underscore `_`:
+
+1. Experimental name and researcher initials
+2. Experiment date and experiment number
+3. Condition and replicate number
+4. Immunohistochemistry date
+5. Dye, antibodies or transcript
+6. Image capture date
+7. Microscope type
+8. Lens, zoom and image number
+
+Example:
+
+`HESH9-CS_201001_d11-CT0.3_181002_DAPI+rbLMX1AKN-dk555_181109_CF_10Xz2-1.tif`
+
+Where:
+
+- Experiment name & initial: `HESH9-CS`. 
+- Experiment date (and number if provided): `181002`
+- Condition (and replicate if provided): `d11-CT0.3`.
+- Immunohistochemistry date: `201002`
+- Dye/antibodies/transcript: `DAPI+rbLMX1AKN-dk555`.
+- Image capture date: `181109`
+- Microscope type: `CF`
+- Lens, zoom & image number: `10X-z2-3`
+
+
+## Check names, move files, optionally anonymize filenames
+
+```{r, setup}
+## checks if the `here` package is installed, if not, installs 
+if(! requireNamespace("here",quietly=TRUE)){
+  install.packages("here")
+}
+
+## load libraries
+library(here) # load `here` package
+
+## source Oliver's scripts
+source(here("arenas-03","arenasImageOrganizer","R","name_checker.R"))
+source(here("arenas-03","arenasImageOrganizer","R","file_mover.R"))
+source(here("arenas-03","arenasImageOrganizer","R","file_anonymizer.R"))
+
+```
+
+
+```{r}
+## check names using name_checker.R
+name_check_log  <- name_checker(here("arenas-03","files"))
+
+## move files and write log using file_mover.R
+file_move_log <- file_mover(here("arenas-03","files"), here("arenas-03","moved"))
+write.table(file_move_log, here(log_path,"file_mover.log"), sep="\n", quote=F, row.names=F, col.names=F)
+
+
+## Optionally anonymize files using file_anonymizer.R
+file_anon_log <- file_anonymizer(here("arenas-03","moved","HESH9-CS","201001","GFP"),deleteOrig=FALSE)
+write.table(file_anon_log,here(log_path,"file_anonymize.log"),sep="\n",quote=F,row.names=F,col.names=F)
+
+```
+
+
+
+
