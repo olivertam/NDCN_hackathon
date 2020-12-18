@@ -41,7 +41,7 @@ file_anonymizer <- function(folder,deleteOrig=TRUE){
         extension <- tools::file_ext(files[i])
         anonDate <- format(today, format="%y%m%d")
         newfile <- paste0("anonymizedFile_",anonDate,"_",filenum[i],".", extension)
-        output <- paste0(folder,"/", newfile)
+        output <- file.path(folder, newfile)
         file.copy(files[i], output)
         if(deleteOrig){
             file.remove(files[i])
@@ -57,7 +57,8 @@ file_anonymizer <- function(folder,deleteOrig=TRUE){
     }else{
         log  <- c(log,paste(dict,collapse = " is originally "))
     }
-    write(log, file=paste0(folder,"/","file_key_",anonDate,".log"), sep="\n")
+    logfile <- file.path(folder,paste0("file_key_",anonDate,".log"))
+    write(log, file=logfile, sep="\n")
     return(log)
 }
 

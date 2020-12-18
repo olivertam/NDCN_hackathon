@@ -79,7 +79,7 @@ file_mover <- function(folder, dest_root=folder, anonymize=FALSE){
         }
 
         ## According to nomenclature, the first three sections is the subdirectory structure, and the rest is the actual file name
-        subdir <- paste(file_info[1:3],collapse="/")
+        subdir <- do.call('file.path',as.list(file_info[1:3]))
         newfile <- paste(file_info[4:length(file_info)],collapse="_")
 
         ## Move the file, store the destination with a new file and make notes in log
