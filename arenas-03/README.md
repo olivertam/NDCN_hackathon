@@ -55,6 +55,10 @@ At one point Ernest commented that it is surprising that a lot of the code is sa
 
 We ended with discussing next steps for folks in the Arenas Lab, and how they can all work from a single, up-to-date version of Oliver's code. They have already created a GitHub Organization for their lab (https://github.com/ArenasLab), where they've forked Oliver's repo. So next steps can involve continuing to use and test the code from this repo, and have any edits discussed with the group and updated so that everyone is working from the same system. Very exciting!
 
+Thank you so much to the Arenas Lab and Oliver Tam for these Hackathons. They were possible because you were open to sharing your computational challenges and to learning and addressing them together, despite everything else going on. And one final thank you to Oliver: thanks so much for your leadership and expertise to make these Hackathons so successful. You truly helped us reimagine what’s possible in a way that we can all learn from. It’s been wonderful working with you all!
+
+**Endnote**
+
 This was my (Julie's) last time leading Office Hours, and during introductions folks shared about what they've learned, which was really inspiring. Here are some of those comments (paraphrased):
 
 * I've focused on writing code & workflows that are actually readable by others (for sharing)
