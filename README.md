@@ -111,7 +111,3 @@ This was my (Julie's) last time leading Office Hours, and during introductions f
 * I've learned a lot more than I expected, things I wouldn't have reached on my own
 * I've learned many useful tools, and am enjoying the script we're using to declutter all my messy files. I'm trying to incorporate version control too and looking forward to what we're doing next
 
-Thank you again for being part of Office Hours; it has been a pleasure to work with the NDCN community this year! Through Office Hours I’ve learned so much about the complexity of your work and hope that the topics we covered have helped you be a bit more efficient and empowered in your computational approaches. Thank you for being so welcoming and I hope our paths will cross again! Please stay in touch: CZIScience Slack, [juliaslowndes@gmail.com](mailto:juliaslowndes@gmail.com), Twitter [@juliesquid](https://twitter.com/juliesquid), [openscapes.org](https://openscapes.org)
-
-**Office Hours will continue in 2021 with Chris Sifuentes**, and will continue to focus on computational skills and community building within the NDCN. I hope you can attend, and bring your lab!
-
